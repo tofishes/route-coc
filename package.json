@@ -1,0 +1,30 @@
+{
+  "name": "route-coc",
+  "version": "1.0.0",
+  "description": "config route",
+  "main": "index.js",
+  "scripts": {
+    "test": "test -a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tofishes/route-coc.git"
+  },
+  "keywords": [
+    "route"
+  ],
+  "author": "tofishes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tofishes/route-coc/issues"
+  },
+  "homepage": "https://github.com/tofishes/route-coc#readme",
+  "dependencies": {
+    "node-glob": "^1.2.0",
+    "path-to-regexp": "^1.5.3",
+    "t-log": "^1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  }
+}
