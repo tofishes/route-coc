@@ -1,0 +1,36 @@
+/**
+ * 匹配route
+ * 两种匹配方法： 1、用filter得到全部匹配； 2、for循环得到一个匹配就终止；
+ * 目前按第二种方式
+ */
+function getParam(pathInfo, paramKeys) {
+  // 得到参数
+  // https://github.com/expressjs/express/blob/master/lib/router/layer.js
+  const param = {};
+
+  for (let j = 1; j < pathInfo.length; j++) {
+    const key = paramKeys[j - 1];
+    const prop = key.name;
+    const val = decodeURIComponent(pathInfo[j]);
+
+    if (val !== 'undefined') {
+      param[prop] = val;
+    }
+  }
+
+  return param;
+}
+
+module.exports = (pathname, routers) => {
+  for (let i = 0, l = routers.length, router, pathInfo; i < l; i++) {
+    router = routers[i];
+    pathInfo = router.pathRegx.exec(pathname);
+
+    if (pathInfo) {
+      const param = getParam(pathInfo, router.paramKeys);
+      return { router, param };
+    }
+  }
+
+  return {};
+};

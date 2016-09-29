@@ -15,9 +15,11 @@ module.exports = function parseMultiName(map, each = noop) {
 
     if (names.length > 1) {
       names.forEach(item => {
-        newMap[item.trim()] = map[name];
-        // 注意：map[name]是同一个对象引用，each方法需注意
-        each(item, map[name]);
+        // part不能为同一个对象的引用，
+        // 如果为同一个对象引用，多路由参数的解析会发生覆盖，也可能造成each方法不可预料的问题
+        const part = Object.assign({}, map[name]);
+        newMap[item.trim()] = part;
+        each(item, part);
       });
     } else {
       newMap[name] = map[name];
