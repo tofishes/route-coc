@@ -7,5 +7,11 @@ module.exports = {
       res.send('hello world');
       return false;
     }
+  },
+  '/proxy': {
+    'get': {
+      'api': 'http://www.baidu.com',
+      'proxy': true
+    }
   }
 };

@@ -8,6 +8,7 @@
 * query: get请求地址?后跟的参数，req.query
 * body: post请求体参数，req.body
 * param: 路由中定义的参数，req.param
+* param将被分别合并到req.query, req.body
 
 *** 工作流程
 1、读取router文件夹所有配置，需对多个逗号分隔的route做分离

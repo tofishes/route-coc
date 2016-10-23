@@ -21,7 +21,7 @@ function getParam(pathInfo, paramKeys) {
   return param;
 }
 
-module.exports = (pathname, routers) => {
+function match(pathname, routers) {
   for (let i = 0, l = routers.length, router, pathInfo; i < l; i++) {
     router = routers[i];
     pathInfo = router.pathRegx.exec(pathname);
@@ -33,4 +33,24 @@ module.exports = (pathname, routers) => {
   }
 
   return {};
-};
+}
+
+function matchRouter(req, res, next) {
+  const pathname = req.path;
+  const routers = req.app.get('routers');
+
+  const { router = {}, param = {} } = match(pathname, routers);
+
+  req.router = router[req.method.toLowerCase()];
+  req.param = param;
+
+  Object.assign(req.query, param);
+  // 若未使用body-parser，req.body为undefined
+  if (req.body) {
+    Object.assign(req.body, param);
+  }
+
+  return next();
+}
+
+module.exports = matchRouter;
