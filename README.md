@@ -10,6 +10,14 @@
 * param: 路由中定义的参数，req.param
 * param将被分别合并到req.query, req.body
 
+
+*** 框架内扩展属性及方法：
+* req.pathname 默认等于req.path, 使用req.forward功能后则不相等，req.path始终为原始请求地址
+  推荐使用req.pathname替代req.path
+* res.forward 服务器端跳转，区别于res.redirect
+* req.stageIndex 当前stage索引，框架内使用，使用者可忽略
+* req.router 当前pathname所匹配到的router
+
 *** 工作流程
 1、读取router文件夹所有配置，需对多个逗号分隔的route做分离
 2、遍历routers，把route转为正则并存入router
