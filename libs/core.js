@@ -23,10 +23,6 @@ function loadRoutes(dir) {
   return map;
 }
 
-function getMethod(req = { method: 'get' }) {
-  return req.method.toLowerCase();
-}
-
 // const middleware = (req, res, next) => next();
 // coc.use(parseRouter);
 // coc.use(middleware);
@@ -42,7 +38,8 @@ function getMethod(req = { method: 'get' }) {
  * @return {[type]}      [description]
  */
 module.exports = (app, args) => {
-  const { routerDir = defaultRouterDir } = args;
+  const defaultStages = [matchRouter, requestProxy];
+  const { routerDir = defaultRouterDir, stages = defaultStages } = args;
 
   const routerMap = loadRoutes(routerDir);
   const routers = parseRouter(routerMap);
@@ -56,9 +53,13 @@ module.exports = (app, args) => {
     return name;
   });
 
-  const stage = new Stage([matchRouter, requestProxy]);
+  const stage = new Stage(stages);
   // 匹配当前请求对应的路由，并解析出param
   stage.set('app', app);
+
+  app.use((req, res, next) => {
+    stage.handle(req, res, next);
+  });
 
   return stage;
 };
