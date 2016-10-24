@@ -12,6 +12,10 @@ module.exports = {
     'get': {
       'api': 'http://www.baidu.com',
       'proxy': true
+    },
+    'post': {
+      'api': 'http://www.xunlei.com',
+      'proxy': true
     }
   }
 };

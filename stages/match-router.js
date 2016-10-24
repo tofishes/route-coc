@@ -38,12 +38,24 @@ function match(pathname, routers) {
 function matchRouter(req, res, next) {
   const pathname = req.pathname;
   const routers = req.app.get('routers');
+  const { router, param = {} } = match(pathname, routers);
 
-  const { router = {}, param = {} } = match(pathname, routers);
-
-  req.router = router[req.method.toLowerCase()];
   req.param = param;
 
+  // 未匹配到路由
+  if (!router) {
+    return next();
+  }
+
+  const method = req.method.toLowerCase();
+  const supportRouter = router[method];
+
+  if (!supportRouter) {
+    throw new Error(`405 ${method} Method Not Allowed`);
+  }
+
+  req.router = supportRouter;
+  // 合并参数
   Object.assign(req.query, param);
   // 若未使用body-parser，req.body为undefined
   if (req.body) {

@@ -10,7 +10,7 @@ function getRequest(options = {}) {
     'headers': {},
     'cert': null,
     'strictSSL': false,
-    'timeout': 2 * 1000, // milliseconds 2秒
+    'timeout': 10 * 1000, // milliseconds 2秒
     'json': true
   };
 
