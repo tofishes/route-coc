@@ -5,6 +5,7 @@ const parseMultiName = require('../utils/parse-multi-name');
 const parseRouter = require('./parse-router');
 const Stage = require('./stage');
 
+const pageInfo = require('../stages/page-info');
 const matchRouter = require('../stages/match-router');
 const requestProxy = require('../stages/request-proxy');
 
@@ -38,7 +39,7 @@ function loadRoutes(dir) {
  * @return {[type]}      [description]
  */
 module.exports = (app, args) => {
-  const defaultStages = [matchRouter, requestProxy];
+  const defaultStages = [pageInfo, matchRouter, requestProxy];
   const { routerDir = defaultRouterDir, stages = defaultStages } = args;
 
   const routerMap = loadRoutes(routerDir);
