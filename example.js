@@ -17,15 +17,19 @@ cocer.before('matchRouter', function m(req, res, next) {
   log.info('this: ', this);
   next();
 });
-cocer.after('matchRouter', (req, res, next) => {
+cocer.after('requestProxy', (req, res, next) => {
   log.debug('param:', req.param);
-  log.debug('router:', req.router);
+  log.debug('path:', req.path);
+  const pathname = req.pathname || req.path;
 
+  if (pathname === '/forward') {
+    log.info(req.router, '********');
+    res.forward('/proxy');
+    return;
+  }
+  log.warn(req.pathname, '*****');
   next();
 });
-
-
-cocer.run();
 
 app.listen(8080, () => {
   const startInfo = 'server run at http://localhost:8080';
