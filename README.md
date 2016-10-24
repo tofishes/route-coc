@@ -14,7 +14,7 @@
 *** 框架内扩展属性及方法：
 * req.pathname 默认等于req.path, 使用req.forward功能后则不相等，req.path始终为原始请求地址
   推荐使用req.pathname替代req.path
-* res.forward 服务器端跳转，区别于res.redirect
+* res.forward 服务器端跳转，改变req.pathname及req.param，区别于res.redirect
 * req.stageIndex 当前stage索引，框架内使用，使用者可忽略
 * req.router 当前pathname所匹配到的router
 
