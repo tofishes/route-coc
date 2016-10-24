@@ -36,7 +36,7 @@ function match(pathname, routers) {
 }
 
 function matchRouter(req, res, next) {
-  const pathname = req.path;
+  const pathname = req.pathname;
   const routers = req.app.get('routers');
 
   const { router = {}, param = {} } = match(pathname, routers);
