@@ -18,16 +18,21 @@ cocer.before('matchRouter', function m(req, res, next) {
   next();
 });
 cocer.after('requestProxy', (req, res, next) => {
+  const pathname = req.pathname;
   log.debug('param:', req.param);
-  log.debug('path:', req.path);
-  const pathname = req.pathname || req.path;
+  log.debug('path:', pathname);
 
   if (pathname === '/forward') {
     log.info(req.router, '********');
     res.forward('/proxy');
+    // res.redirect('http://www.163.com');
+    // res.status(200).send('hello 200 ok!');
+    // next已经可以正确处理forward情况
+    // 类似redirect，res.send等已经响应了服务器的情况
+    next();
     return;
   }
-  log.warn(req.pathname, '*****');
+
   next();
 });
 
