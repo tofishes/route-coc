@@ -61,6 +61,11 @@ Stage.prototype.handle = function handle(req, res, next) {
   const startIndex = 0;
   // 特别注意，nextStage不应改变全局变量
   const nextStage = () => {
+    // 已响应了客户端，则不再继续任何处理
+    if (res.hasSent || res.headersSent) {
+      return;
+    }
+
     const prevIndex = req.stageIndex;
     const stageIndex = prevIndex + 1;
     const isLast = stageIndex === actions.length;
@@ -82,6 +87,7 @@ Stage.prototype.handle = function handle(req, res, next) {
       throw new Error('foward path cannot be the same as req.path!');
     }
 
+    res.forwardSent = true;
     req.pathname = pathname;
     req.stageIndex = 0;
     actions[req.stageIndex](req, res, nextStage);

@@ -41,6 +41,8 @@ function requestProxy(req, res, next) {
     res.set(response.headers);
   })
   .pipe(res);
+
+  res.hasSent = true;
 }
 
 module.exports = requestProxy;
