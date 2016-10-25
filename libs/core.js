@@ -38,9 +38,14 @@ function loadRoutes(dir) {
  * args.handleAPI: 预处理api地址
  * @return {[type]}      [description]
  */
-module.exports = (app, args) => {
+module.exports = (app, args = {}) => {
   const defaultStages = [pageInfo, matchRouter, requestProxy];
-  const { routerDir = defaultRouterDir, stages = defaultStages } = args;
+  // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
+  const {
+    routerDir = defaultRouterDir, // 路由目录
+    stages = defaultStages,       // 默认stage列表
+    mount = '/'                   // 程序挂载路径，类型符合express path examples
+  } = args;
 
   const routerMap = loadRoutes(routerDir);
   const routers = parseRouter(routerMap);
@@ -58,7 +63,7 @@ module.exports = (app, args) => {
   // 匹配当前请求对应的路由，并解析出param
   stage.set('app', app);
 
-  app.use((req, res, next) => {
+  app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
   });
 
