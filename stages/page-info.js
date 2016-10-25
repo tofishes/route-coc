@@ -1,6 +1,12 @@
 const browserInfo = require('../utils/browser');
 const slash = '/';
-
+/**
+ * 页面变量初始化等
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 module.exports = function pageInfo(req, res, next) {
   const pathname = req.pathname.replace(slash, '');
   const firstSlash = pathname.indexOf(slash);
