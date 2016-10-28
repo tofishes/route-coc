@@ -19,4 +19,9 @@ function getRequest(options = {}) {
   return request.defaults(defaults);
 }
 
+getRequest.methods = ['get', 'post', 'put', 'delete'].map(method => {
+  getRequest[method] = (options, complete) => getRequest()[method](options, complete);
+  return method;
+});
+
 module.exports = getRequest;
