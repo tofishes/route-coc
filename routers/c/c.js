@@ -17,5 +17,20 @@ module.exports = {
       'api': 'http://www.xunlei.com',
       'proxy': true
     }
+  },
+  '/proxy-api': {
+    'get': {
+      'api': [{
+        'api': 'http://113.108.139.178:9590/front/area/getAllHotArea',
+        'cache': true
+      },
+        'http://113.108.139.178:9190/user/getUserInfo'
+      ],
+      handle(data) {
+        log.debug(data, '----');
+        this.view = 'proxy';
+        return data;
+      }
+    }
   }
 };
