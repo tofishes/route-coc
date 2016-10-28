@@ -1,4 +1,4 @@
-const getRequest = require('../utils/request.js');
+const request = require('../utils/request');
 
 /**
  * 代理请求，针对ajax直接请求api(未配置router)，和router设置了proxy属性
@@ -24,10 +24,7 @@ function requestProxy(req, res, next) {
 
   let url = req.path;
   if (routeProxy) {
-    url = router.api;
-  }
-  if (handleAPI) {
-    url = handleAPI(url, req);
+    url = handleAPI(router.api, req);
   }
 
   const method = req.method.toLowerCase();
@@ -37,7 +34,7 @@ function requestProxy(req, res, next) {
     'body': req.body
   };
 
-  getRequest()[method](options).on('response', response => {
+  request[method](options).on('response', response => {
     res.set(response.headers);
   })
   .pipe(res);
