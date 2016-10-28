@@ -78,10 +78,16 @@ Stage.prototype.handle = function handle(req, res, next) {
     req.stageIndex = stageIndex;
     actions[stageIndex](req, res, nextStage);
   };
+  // 提供跳过stage处理流程的功能
+  nextStage.stageOver = originNext;
 
+  // 添加扩展属性
   // 增加一个pathname自定义属性，用于取代req.path
   // pathname可实现forward功能
   req.pathname = req.path;
+  req.stageIndex = startIndex;
+
+  res.apiData = {};
   res.forward = pathname => {
     if (pathname === req.path) {
       throw new Error('foward path cannot be the same as req.path!');
@@ -93,7 +99,6 @@ Stage.prototype.handle = function handle(req, res, next) {
     actions[req.stageIndex](req, res, nextStage);
   };
 
-  req.stageIndex = startIndex;
   actions[startIndex](req, res, nextStage);
 };
 
