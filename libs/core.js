@@ -1,5 +1,4 @@
 const glob = require('glob');
-const log = require('t-log');
 const swig = require('swig');
 
 const memoryCache = require('../utils/memory-cache');
@@ -11,6 +10,7 @@ const pageInfo = require('../stages/page-info');
 const matchRouter = require('../stages/match-router');
 const requestProxy = require('../stages/request-proxy');
 const handleRouter = require('../stages/handle-router');
+const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
 
 const pwd = process.cwd();
@@ -29,12 +29,6 @@ function loadRoutes(dir) {
   return map;
 }
 
-// const middleware = (req, res, next) => next();
-// coc.use(parseRouter);
-// coc.use(middleware);
-// coc.use(autoRender);
-// coc.use(render);
-
 /**
  * 框架定名 route-coc，基于express.js用于简化前端页面直出流程的框架
  * coc 意为 约定优于配置（convention over configuration）
@@ -47,7 +41,7 @@ function loadRoutes(dir) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, matchRouter, requestProxy, handleRouter, render
+    pageInfo, matchRouter, requestProxy, handleRouter, getViewPath, render
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
