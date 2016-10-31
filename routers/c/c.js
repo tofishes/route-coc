@@ -21,13 +21,16 @@ module.exports = {
   '/proxy-api': {
     'get': {
       'api': [{
-        'api': 'http://113.108.139.178:9590/front/area/getAllHotArea',
-        'cache': true
+        'api': 'http://www.sipin.com/api/region/region',
+        'name': 'region',
+        'cache': true,
+        handle(data) {
+          return data.data.region;
+        }
       },
         'http://113.108.139.178:9190/user/getUserInfo'
       ],
       handle(data) {
-        log.debug(data, '----');
         this.view = 'proxy';
         return data;
       }

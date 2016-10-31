@@ -8,8 +8,8 @@ const cocer = coc(app);
 // 查看阶段列表，每个阶段都可以用before,after处理
 log.info(cocer.stageNames);
 
-cocer.before('matchRouter', (req, res, next) => {
-  log.debug('...matchRouter before 1');
+cocer.before('pageInfo', (req, res, next) => {
+  req.reqCircle = log.time();
   next();
 });
 cocer.before('matchRouter', (req, res, next) => {
@@ -32,6 +32,16 @@ cocer.after('requestProxy', (req, res, next) => {
     return;
   }
 
+  next();
+});
+cocer.before('render', (req, res, next) => {
+  const apiInfo = res.apiInfo;
+  log.debug(apiInfo, '++++');
+  Object.keys(apiInfo).map(name => {
+    const info = apiInfo[name];
+    return log.info(info.method, info.api, info.consumeTime, 'ms');
+  });
+  log.warn('cost time: ', req.reqCircle.end());
   next();
 });
 
