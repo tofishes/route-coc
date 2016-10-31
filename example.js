@@ -36,13 +36,18 @@ cocer.after('requestProxy', (req, res, next) => {
 });
 cocer.before('render', (req, res, next) => {
   const apiInfo = res.apiInfo;
-  log.debug(apiInfo, '++++');
+
   Object.keys(apiInfo).map(name => {
     const info = apiInfo[name];
     return log.info(info.method, info.api, info.consumeTime, 'ms');
   });
   log.warn('cost time: ', req.reqCircle.end());
+
   next();
+});
+
+app.use((req, res) => {
+  res.status(404).send('404 not found!');
 });
 
 app.listen(8080, () => {
