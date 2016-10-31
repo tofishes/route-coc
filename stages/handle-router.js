@@ -99,12 +99,12 @@ module.exports = function handleRouter(req, res, next) {
     return task.addApiTask(apiItem);
   });
 
-  return task.run(() => {
+  return task.error(() => {
+    next();
+  }).run(() => {
     if (router.handle) {
       res.apiData = router.handle(res.apiData, req, res);
     }
-    next();
-  }).error(() => {
     next();
   });
 };

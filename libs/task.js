@@ -21,6 +21,7 @@ class Task {
 
   error(handle) {
     this.error = handle;
+    return this;
   }
 
   run(done) {
@@ -33,6 +34,7 @@ class Task {
         onerror(error);
       }
     });
+
     return this;
   }
 
