@@ -1,5 +1,3 @@
-const request = require('../utils/request');
-
 /**
  * 代理请求，针对ajax直接请求api(未配置router)，和router设置了proxy属性
  * 实践：
@@ -27,6 +25,7 @@ function requestProxy(req, res, next) {
     url = handleAPI(router.api, req);
   }
 
+  const request = req.httpRequest();
   const method = req.method.toLowerCase();
   const options = {
     url,

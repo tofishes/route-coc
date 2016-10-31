@@ -12,6 +12,7 @@ const requestProxy = require('../stages/request-proxy');
 const handleRouter = require('../stages/handle-router');
 const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
+const initHttpRequest = require('../stages/init-http-request');
 
 const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
@@ -41,7 +42,7 @@ function loadRoutes(dir) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, matchRouter, requestProxy, handleRouter, getViewPath, render
+    pageInfo, matchRouter, initHttpRequest, requestProxy, handleRouter, getViewPath, render
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {

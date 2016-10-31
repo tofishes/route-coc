@@ -1,6 +1,5 @@
 const async = require('async');
 const log = require('t-log');
-const request = require('../utils/request');
 const env = require('../utils/env');
 
 class Task {
@@ -41,6 +40,7 @@ class Task {
   addApiTask(apiConfig) {
     const { req, res } = this.context;
     const methodMark = ':';
+    const request = req.httpRequest();
 
     const qs = apiConfig.query;
     const body = apiConfig.body;
@@ -88,7 +88,7 @@ class Task {
 
       const complete = (error, response, resBody) => {
         const consumeTime = timer.end();
-        const headers = response.headers;
+        const headers = response && response.headers;
         Object.assign(res.apiInfo[dataName], { consumeTime, headers });
 
         let result = resBody || {};
