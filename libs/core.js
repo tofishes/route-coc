@@ -91,7 +91,6 @@ module.exports = (app, args = {}) => {
 
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
-    log.info('Stages has loaded.');
   });
 
   return stage;

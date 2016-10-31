@@ -17,6 +17,10 @@ function isString(obj) {
 module.exports = function handleRouter(req, res, next) {
   let router = req.router;
 
+  if (!router) {
+    return next();
+  }
+
   if (isFunc(router)) {
     router = router(req, res);
   }
@@ -41,7 +45,7 @@ module.exports = function handleRouter(req, res, next) {
   const body = router.body;
   const name = router.name;
   const cache = router.cache;
-  const excute = func => func.call(router, req, res, next);
+  const excute = func => func.call(router, req, res);
 
   if (isString(api)) {
     api = [{ api }];
@@ -97,7 +101,7 @@ module.exports = function handleRouter(req, res, next) {
 
   return task.run(() => {
     if (router.handle) {
-      res.apiData = router.handle(res.apiData, req, res, next);
+      res.apiData = router.handle(res.apiData, req, res);
     }
     next();
   }).error(() => {

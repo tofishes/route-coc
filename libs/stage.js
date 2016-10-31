@@ -76,6 +76,16 @@ Stage.prototype.handle = function handle(req, res, next) {
     }
 
     req.stageIndex = stageIndex;
+    // TODO nextOnce can't be used;
+    // const nextOnce = () => {
+    //   if (nextOnce.invoked) {
+    //     return;
+    //   }
+
+    //   nextOnce.invoked = true;
+    //   nextStage();
+    // };
+
     actions[stageIndex](req, res, nextStage);
   };
   // 提供跳过stage处理流程的功能
@@ -88,6 +98,7 @@ Stage.prototype.handle = function handle(req, res, next) {
   req.stageIndex = startIndex;
 
   res.apiData = {};
+  res.apiInfo = {};
   res.forward = pathname => {
     if (pathname === req.path) {
       throw new Error('foward path cannot be the same as req.path!');

@@ -39,7 +39,7 @@ class Task {
 
   // api类型任务
   addApiTask(apiConfig) {
-    const { req, res, next } = this.context;
+    const { req, res } = this.context;
     const methodMark = ':';
 
     const qs = apiConfig.query;
@@ -66,17 +66,19 @@ class Task {
     const handleAPI = req.app.get('handleAPI');
     url = handleAPI(url, req);
 
+    apiConfig.method = method;
+
     function action(callback) {
       const timer = log.time();
+
+      res.apiInfo[dataName] = apiConfig;
 
       if (cache) {
         const getCache = req.app.get('apiDataCache');
         const result = getCache.call(req.router, url);
 
         if (result) {
-          const consumeTime = timer.end();
-
-          result.apiInfo.consumeTime = consumeTime;
+          res.apiInfo[dataName].consumeTime = timer.end();
           res.apiData[dataName] = result;
 
           callback(null, result);
@@ -86,6 +88,9 @@ class Task {
 
       const complete = (error, response, resBody) => {
         const consumeTime = timer.end();
+        const headers = response.headers;
+        Object.assign(res.apiInfo[dataName], { consumeTime, headers });
+
         let result = resBody || {};
 
         if (error) {
@@ -108,11 +113,8 @@ class Task {
         }
 
         if (apiConfig.handle) {
-          result = apiConfig.handle.call(req.router, result, req, res, next);
+          result = apiConfig.handle.call(req.router, result, req, res);
         }
-
-        result.apiInfo = apiConfig;
-        result.apiInfo.consumeTime = consumeTime;
 
         res.apiData[dataName] = result;
 

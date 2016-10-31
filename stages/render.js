@@ -9,6 +9,10 @@ function render(req, res, next) {
   const app = req.app;
   const router = req.router;
 
+  if (!router) {
+    return next();
+  }
+
   let view = router.view;
 
   if (!view) {
@@ -41,11 +45,10 @@ function render(req, res, next) {
   if (excludes.length) {
     log.warn(`viewPath: ${view} is excluded!`);
 
-    next();
-    return;
+    return next();
   }
 
-  fs.exists(filePath, exists => {
+  return fs.exists(filePath, exists => {
     if (exists) {
       const engine = app.engines[ext];
       const data = Object.assign(res.locals, res.apiData);
