@@ -12,6 +12,16 @@ cocer.before('pageInfo', (req, res, next) => {
   req.reqCircle = log.time();
   next();
 });
+cocer.before('initHttpRequest', (req, res, next) => {
+  let timeout = 2 * 1000;
+
+  if (req.router && req.router.timeout) {
+    timeout = req.router.timeout;
+  }
+  req.httpRequestConfig = { timeout };
+
+  next();
+});
 cocer.before('matchRouter', (req, res, next) => {
   log.debug('...matchRouter before 2');
   next();

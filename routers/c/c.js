@@ -30,6 +30,7 @@ module.exports = {
       },
         'http://113.108.139.178:9190/user/getUserInfo'
       ],
+      'timeout': 1000,
       handle(data) {
         this.view = 'proxy';
         return data;
