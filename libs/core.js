@@ -9,13 +9,16 @@ const Stage = require('./stage');
 const pageInfo = require('../stages/page-info');
 const matchRouter = require('../stages/match-router');
 const requestProxy = require('../stages/request-proxy');
+const handleInterceptor = require('../stages/handle-interceptor');
 const handleRouter = require('../stages/handle-router');
+const runTask = require('../stages/run-task');
 const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
 const initHttpRequest = require('../stages/init-http-request');
 
 const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
+const defaultInterceptorDir = `${pwd}/interceptors`;
 const defaultViewDir = `${pwd}/views`;
 
 function loadRoutes(dir) {
@@ -42,7 +45,8 @@ function loadRoutes(dir) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, matchRouter, initHttpRequest, requestProxy, handleRouter, getViewPath, render
+    pageInfo, matchRouter, initHttpRequest, requestProxy,
+    handleInterceptor, handleRouter, runTask, getViewPath, render
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
@@ -52,9 +56,14 @@ module.exports = (app, args = {}) => {
     mount = '/'                   // 程序挂载路径，类型符合express path examples
   } = args;
 
+  const interceptorMap = loadRoutes(defaultInterceptorDir);
   const routerMap = loadRoutes(routerDir);
   const routers = parseRouter(routerMap);
+  const interceptors = parseRouter(interceptorMap);
+
   // 存储
+  app.set('interceptorMap', interceptorMap);
+  app.set('interceptors', interceptors);
   app.set('routerMap', routerMap);
   app.set('routers', routers);
   app.set('viewExclude', viewExclude);

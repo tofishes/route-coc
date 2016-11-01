@@ -14,6 +14,7 @@ function getRequest() {
 
 module.exports = function initHttpRequest(req, res, next) {
   req.httpRequest = getRequest;
+  req.apisTask = {};
 
   next();
 };
