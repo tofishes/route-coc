@@ -7,55 +7,57 @@ function isFunc(obj) {
 function isString(obj) {
   return typeOf(obj).is('string');
 }
-/**
- * 分析路由，处理参数，发起请求得到数据并存入res.apiData
- * @param  {[type]}   req  [description]
- * @param  {[type]}   res  [description]
- * @param  {Function} next [description]
- * @return {[type]}        [description]
- */
-module.exports = function handleRouter(req, res, next) {
-  let router = req.router;
+function handleConfig(configArg, req, res) {
+  let config = configArg;
 
-  if (!router) {
-    return next();
+  if (!config) {
+    return;
   }
 
-  if (isFunc(router)) {
-    router = router(req, res);
+  if (isFunc(config)) {
+    config = config(req, res);
   }
-
-  let api = router.api;
 
   // 无api配置，直接执行下一个stage
-  if (!api) {
-    if (router.handle) {
-      res.locals.dataset = router.handle(req, res);
+  if (!config.api) {
+    if (config.handle) {
+      res.apiData = config.handle(res.apiData, req, res);
     }
 
-    return next();
+    return;
   }
+
+  let api = config.api;
   // 统一api配置数据结构
   // api可以是字符串，字符串数组，对象混合字符串数组，函数(返回前面3中类型数据)
   if (isFunc(api)) {
-    api = api.call(router, req, res);
+    api = api.call(config, req, res);
   }
   // 统一格式
-  const query = router.query;
-  const body = router.body;
-  const name = router.name;
-  const cache = router.cache;
-  const excute = func => func.call(router, req, res);
+  const query = config.query;
+  const body = config.body;
+  const name = config.name;
+  const cache = config.cache;
+  const handle = config.handle;
+  const excute = func => func.call(config, req, res);
 
   if (isString(api)) {
-    api = [{ api }];
+    api = [{ api, handle }];
+    // 移除，避免在task完成后二次执行
+    delete config.handle;
   }
 
   if (! Array.isArray(api)) {
-    throw new TypeError('The type of router.api must be String or Array');
+    throw new TypeError('The type of api must be String or Array');
   }
 
-  const task = new Task(router.series).context({ req, res, next });
+  const isSeries = config.series;
+  const taskName = isSeries ? 'series' : 'parallel';
+  let task = req.apisTask[taskName];
+
+  if (!task) {
+    task = new Task(isSeries).context({ req, res });
+  }
   /*
    * 统一格式为： [{api, query, body}...]，转为apiTask， 过滤掉item为函数情况下返回false
    */
@@ -99,12 +101,20 @@ module.exports = function handleRouter(req, res, next) {
     return task.addApiTask(apiItem);
   });
 
-  return task.error(() => {
-    next();
-  }).run(() => {
-    if (router.handle) {
-      res.apiData = router.handle(res.apiData, req, res);
-    }
-    next();
-  });
-};
+  req.apisTask[taskName] = task;
+}
+/**
+ * 处理路由
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
+function handleRouter(req, res, next) {
+  handleConfig(req.router, req, res);
+
+  return next();
+}
+handleRouter.handleConfig = handleConfig;
+
+module.exports = handleRouter;
