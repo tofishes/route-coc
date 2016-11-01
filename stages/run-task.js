@@ -16,7 +16,7 @@ module.exports = function runTask(req, res, next) {
     seriesTask.error(() => {
       next();
     }).run(() => {
-      if (res.forwardSent) {
+      if (res.forwardSent || res.hasSent || res.headersSent) {
         return;
       }
 
