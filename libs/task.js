@@ -6,11 +6,17 @@ class Task {
 
   constructor(isSeries) {
     this.tasks = [];
-    this.mode = isSeries ? 'series' : 'parallel';
+    this.props = {};
+    this.mode(isSeries);
   }
 
   context(context) {
-    this.context = context;
+    this.props.context = context;
+    return this;
+  }
+
+  mode(isSeries) {
+    this.props.mode = isSeries ? 'series' : 'parallel';
     return this;
   }
 
@@ -20,14 +26,18 @@ class Task {
   }
 
   error(handle) {
-    this.error = handle;
+    this.onerror = handle;
     return this;
   }
 
   run(done) {
-    const onerror = this.error;
+    const onerror = this.onerror;
 
-    async[this.mode](this.tasks, (error, results) => {
+    if (!this.tasks.length) {
+      done();
+    }
+
+    async[this.props.mode](this.tasks, (error, results) => {
       done(results);
 
       if (error && onerror) {
@@ -40,7 +50,7 @@ class Task {
 
   // api类型任务
   addApiTask(apiConfig) {
-    const { req, res } = this.context;
+    const { req, res } = this.props.context;
     const methodMark = ':';
     const request = req.httpRequest();
 
