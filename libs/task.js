@@ -36,6 +36,7 @@ class Task {
 
     if (!this.tasks.length) {
       done();
+      return this;
     }
 
     async[this.props.mode](this.tasks, (error, results) => {
