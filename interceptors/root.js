@@ -1,5 +1,5 @@
 module.exports = {
-  '/*': {
+  '/abc/*': {
     'api': 'http://113.108.139.178:9190/user/getUserInfo',
     'series': true,
     'name': 'userInfo',
