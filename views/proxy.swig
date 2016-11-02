@@ -3,14 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
+  <style>
+    section {
+      margin: 1px;
+      padding: 10px;
+      background: #f8f8f8;
+      border-bottom: 1px solid #f3f3f3;
+    }
+    section:after {
+      content: '\20';
+      display: block;
+      clear: both;
+    }
+    p {
+      margin: 0 0 10px;
+    }
+    .avatar {
+      float: left;
+      margin-right: 10px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+    .content {
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    .show img {
+      width: 66px;
+      height: 66px;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h3>Yes proxy!</h3>
-  <h4>省份地区：</h4>
-  <p>
-    {% for area in region %}
-    <span>{{ area.name }}{% if !loop.last %}、{% endif %}</span>
-    {% endfor %}
-  </p>
+  <h4>热门评论：</h4>
+  {% for comment in comments %}
+  <section>
+    <img class="avatar" src="{{ comment.userInfo.avatar }}" alt="">
+    <div class="content">
+      <p><time>{{ comment.formatDate }}</time></p>
+      {% if comment.images %}
+      <p class="show">
+        {% for img in comment.images %}
+        <img src="{{ img }}" alt="">
+        {% endfor %}
+      </p>
+      {% endif %}
+      {{ comment.content }}
+    </div>
+  </section>
+  {% endfor %}
 </body>
 </html>
