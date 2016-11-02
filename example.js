@@ -53,6 +53,10 @@ cocer.before('render', (req, res, next) => {
   });
   log.warn('cost time: ', req.reqCircle.end());
 
+  if (res.headersSent) {
+    log.error('headersSent!');
+  }
+
   next();
 });
 
