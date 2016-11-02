@@ -1,4 +1,5 @@
 const request = require('../utils/request');
+const valueChain = require('../utils/value-chain');
 const methods = ['get', 'post', 'put', 'delete'];
 
 function getRequest() {
@@ -15,6 +16,8 @@ function getRequest() {
 module.exports = function initHttpRequest(req, res, next) {
   req.httpRequest = getRequest;
   req.apisTask = {};
+
+  valueChain.set(res.apiData);
 
   next();
 };

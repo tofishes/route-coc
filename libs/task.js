@@ -1,6 +1,7 @@
 const async = require('async');
 const log = require('t-log');
 const env = require('../utils/env');
+const valueChain = require('../utils/value-chain');
 
 class Task {
 
@@ -103,19 +104,24 @@ class Task {
         const headers = response && response.headers;
         Object.assign(res.apiInfo[dataName], { consumeTime, headers });
 
-        let result = resBody || {};
+        let result = resBody;
+        let willCache = !!cache;
 
         if (error) {
-          result.code = 503;
-          result.message = `API ${url} Service Unavailable.
+          willCache = false;
+          let code = 503;
+          let message = `API ${url} Service Unavailable.
             ${env.isProduction ? '' : error.message}`;
 
           if (error.code === 'ETIMEDOUT') {
-            result.code = 504;
-            result.message = `API ${url} Request Timeout.`;
+            code = 504;
+            message = `API ${url} Request Timeout.`;
           }
+
+          result = { code, message, resBody };
         } else {
           if (!response || response.statusCode !== 200) {
+            willCache = false;
             result = {
               code: response ? response.statusCode : 500,
               message: 'response exception, not 200 ok.',
@@ -128,9 +134,9 @@ class Task {
           result = apiConfig.handle.call(req.router, result, req, res);
         }
 
-        res.apiData[dataName] = result;
+        res.apiData[dataName] = valueChain.set(result);
 
-        if (cache) {
+        if (willCache) {
           const setCache = req.app.get('apiDataCache');
           setCache.call(req.router, url, result);
         }
