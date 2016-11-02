@@ -4,7 +4,7 @@ module.exports = {
     'series': true,
     'name': 'userInfo',
     handle(data, req, res) {
-      res.forward('/proxy');
+      // res.forward('/proxy');
       return data;
     }
   }

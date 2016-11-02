@@ -25,7 +25,7 @@ module.exports = {
         'name': 'region',
         'cache': true,
         handle(data) {
-          return data.data.region;
+          return data.getValue('data.region');
         }
       },
         'http://113.108.139.178:9190/user/getUserInfo'
