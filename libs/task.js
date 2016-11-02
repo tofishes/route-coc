@@ -39,11 +39,11 @@ class Task {
     }
 
     async[this.props.mode](this.tasks, (error, results) => {
-      done(results);
-
       if (error && onerror) {
-        onerror(error);
+        return onerror(error);
       }
+
+      return done(results);
     });
 
     return this;
