@@ -10,7 +10,7 @@ module.exports = {
   },
   '/proxy': {
     'get': {
-      'api': 'http://www.sipin.com',
+      'api': 'http://www.baidu.com',
       'proxy': true
     },
     'post': {

@@ -13,7 +13,7 @@ cocer.before('pageInfo', (req, res, next) => {
   next();
 });
 cocer.before('initHttpRequest', (req, res, next) => {
-  let timeout = 2 * 1000;
+  let timeout = 5 * 1000;
 
   if (req.router && req.router.timeout) {
     timeout = req.router.timeout;
@@ -22,10 +22,7 @@ cocer.before('initHttpRequest', (req, res, next) => {
 
   next();
 });
-cocer.before('matchRouter', (req, res, next) => {
-  log.debug('...matchRouter before 2');
-  next();
-});
+
 cocer.after('requestProxy', (req, res, next) => {
   const pathname = req.pathname;
   log.debug('param:', req.param);
