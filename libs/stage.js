@@ -5,7 +5,7 @@ function Stage(stages) {
   const befores = {};
   const afters = {};
 
-  this.stages = stages;
+  this.stages = this.actions = stages;
   this.stageNames = stages.map(stage => {
     const name = stage.name;
 
