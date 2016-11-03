@@ -40,6 +40,8 @@ coc 意为 约定优于配置（convention over configuration）。
   * router.cache: 是否缓存api结果，通过app.set('apiDataCache', cacheFunction)，app.get('apiDataCache')设置缓存及获取缓存，默认策略是缓存在内存中（重启才会清空）。
   * router.query:
 
+### 拦截器配置
+* interceptor只能配置一级handle + 一级api字符串类型，或api数组类型二级handle
 
 ### 框架内扩展属性及方法：
 * req.pathname 默认等于req.path, 使用req.forward功能后则不相等，req.path始终为原始请求地址
