@@ -19,8 +19,7 @@ function handleInterceptor(req, res, next) {
     return next();
   }
 
-  interceptors.map(interceptor => handleConfig(interceptor, req, res));
-  req.interceptors = interceptors;
+  req.interceptors = interceptors.map(interceptor => handleConfig(interceptor, req, res));
 
   return next();
 }

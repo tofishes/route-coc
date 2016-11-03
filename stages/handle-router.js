@@ -8,10 +8,11 @@ function isString(obj) {
   return typeOf(obj).is('string');
 }
 function handleConfig(configArg, req, res) {
+  // 删除了config属性，这里必须克隆，避免影响原对象
   let config = configArg;
 
   if (!config) {
-    return;
+    return configArg;
   }
 
   if (isFunc(config)) {
@@ -24,7 +25,7 @@ function handleConfig(configArg, req, res) {
       res.apiData = config.handle(res.apiData, req, res);
     }
 
-    return;
+    return configArg;
   }
 
   let api = config.api;
@@ -38,13 +39,12 @@ function handleConfig(configArg, req, res) {
   const body = config.body;
   const name = config.name;
   const cache = config.cache;
-  const handle = config.handle;
   const excute = func => func.call(config, req, res);
-
+  // 如果是拦截器，需要把handle合并进来
+  // 拦截器api为非字符串型时，仅支持数组项内的handle，不支持全局handle
   if (isString(api)) {
+    const handle = config.type === 'interceptor' ? config.handle : null;
     api = [{ api, handle }];
-    // 移除，避免在task完成后二次执行
-    delete config.handle;
   }
 
   if (! Array.isArray(api)) {
@@ -102,6 +102,8 @@ function handleConfig(configArg, req, res) {
   });
 
   req.apisTask[taskName] = task;
+
+  return configArg;
 }
 /**
  * 处理路由
