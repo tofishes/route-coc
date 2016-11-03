@@ -11,7 +11,8 @@ function getRequest(options = {}) {
     'cert': null,
     'strictSSL': false,
     'timeout': 10 * 1000, // milliseconds 2秒
-    'json': true
+    'json': true,
+    'pool': { maxSockets: 5000 }
   };
 
   Object.assign(defaults, options);
