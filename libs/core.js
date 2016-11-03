@@ -59,7 +59,9 @@ module.exports = (app, args = {}) => {
   const interceptorMap = loadRoutes(defaultInterceptorDir);
   const routerMap = loadRoutes(routerDir);
   const routers = parseRouter(routerMap);
-  const interceptors = parseRouter(interceptorMap);
+  const interceptors = parseRouter(interceptorMap, interceptor => {
+    interceptor.type = 'interceptor';
+  });
 
   // 存储
   app.set('interceptorMap', interceptorMap);
