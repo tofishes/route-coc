@@ -13,6 +13,7 @@ module.exports = (routerMap, each = loop) => {
   const routers = routes.map(route => {
     const router = routerMap[route];
 
+    router.route = route;
     // 发现：router.paramKeys === router.pathRegx.keys 为true
     // 不明白express为什么这么写，可能是为了代码清晰，也可能写的时候不知道这种情况？
     router.paramKeys = [];
