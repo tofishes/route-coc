@@ -4,7 +4,8 @@
   "description": "config route",
   "main": "index.js",
   "scripts": {
-    "test": "test -a"
+    "test": "./node_modules/.bin/mocha 'test/**/*.test.js' --timeout 20000",
+    "cover": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha 'test/**/*.test.js' -- -u exports --reporter spec --timeout 20000"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,7 @@
     "body-parser": "^1.15.1",
     "compression": "^1.6.2",
     "connect-timeout": "^1.7.0",
-    "cookie-parser": "^1.4.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "method-override": "^2.3.5",
     "node-glob": "^1.2.0",
@@ -35,7 +36,10 @@
     "tracer": "^0.8.3"
   },
   "devDependencies": {
+    "istanbul": "^0.4.5",
     "memwatch-next": "^0.3.0",
-    "mocha": "^3.0.2"
+    "mocha": "^3.1.2",
+    "should": "^11.1.1",
+    "supertest": "^2.0.1"
   }
 }
