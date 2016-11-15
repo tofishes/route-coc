@@ -1,9 +1,15 @@
 const log = require('t-log');
 const express = require('express');
-const coc = require('./index');
+const coc = require('../index');
 
 const app = express();
-const cocer = coc(app);
+
+const cocer = coc(app, {
+  interceptorDir: `${__dirname}/interceptors`,
+  routerDir: `${__dirname}/routers`,
+  viewDir: `${__dirname}/views`
+});
+
 
 // 查看阶段列表，每个阶段都可以用before,after处理
 log.info(cocer.stageNames);
@@ -23,6 +29,7 @@ cocer.before('initHttpRequest', (req, res, next) => {
   next();
 });
 
+// forward has been test
 cocer.after('requestProxy', (req, res, next) => {
   const pathname = req.pathname;
   log.debug('param:', req.param);
@@ -50,10 +57,6 @@ cocer.before('render', (req, res, next) => {
   });
   log.warn('cost time: ', req.reqCircle.end());
 
-  if (res.headersSent) {
-    log.error('headersSent!');
-  }
-
   next();
 });
 
@@ -67,3 +70,4 @@ app.listen(8080, () => {
   log.info(startInfo);
 });
 
+module.exports = app;

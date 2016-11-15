@@ -8,13 +8,16 @@ module.exports = {
       return false;
     }
   },
+  '/redirect': {
+    'get': {
+      handle(data, req, res) {
+        res.redirect('www.baidu.com');
+      }
+    }
+  },
   '/proxy': {
     'get': {
       'api': 'http://www.baidu.com',
-      'proxy': true
-    },
-    'post': {
-      'api': 'http://www.xunlei.com',
       'proxy': true
     }
   },
@@ -37,13 +40,24 @@ module.exports = {
           handle(data) {
             return data.getValue('data.list');
           }
-        },
-        'http://113.108.139.178:9190/user/getUserInfo'
+        }
       ],
       'timeout': 1000,
       handle(data) {
         this.view = 'proxy';
         return data;
+      }
+    }
+  },
+  '/test/intercept/series/comments': {
+    'get': {
+      handle(data, req, res) {
+        console.log(data, '+++++')
+        if (data.comments && data.comments.length) {
+          return res.send(true);
+        }
+
+        return res.send(false);
       }
     }
   }
