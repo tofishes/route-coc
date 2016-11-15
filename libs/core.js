@@ -1,6 +1,9 @@
 const glob = require('glob');
 const swig = require('swig');
 
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
 const memoryCache = require('../utils/memory-cache');
 const parseMultiName = require('../utils/parse-multi-name');
 const parseRouter = require('./parse-router');
@@ -51,12 +54,14 @@ module.exports = (app, args = {}) => {
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
     routerDir = defaultRouterDir, // 路由目录
+    interceptorDir = defaultInterceptorDir, // 拦截器目录
+    viewDir = defaultViewDir,
     viewExclude = ['**/include/**'], // 排除自动渲染模板的目录
     stages = defaultStages,       // 默认stage列表
     mount = '/'                   // 程序挂载路径，类型符合express path examples
   } = args;
 
-  const interceptorMap = loadRoutes(defaultInterceptorDir);
+  const interceptorMap = loadRoutes(interceptorDir);
   const routerMap = loadRoutes(routerDir);
   const routers = parseRouter(routerMap);
   const interceptors = parseRouter(interceptorMap, interceptor => {
@@ -68,11 +73,9 @@ module.exports = (app, args = {}) => {
   app.set('interceptors', interceptors);
   app.set('routerMap', routerMap);
   app.set('routers', routers);
+  app.set('views', viewDir);
   app.set('viewExclude', viewExclude);
   app.engine('swig', swig.renderFile);
-  if (!app.get('views')) {
-    app.set('views', defaultViewDir);
-  }
   // 设置引擎默认后缀
   if (!app.get('view engine')) {
     app.set('view engine', 'swig');
@@ -90,6 +93,15 @@ module.exports = (app, args = {}) => {
     app.set(name, args[name]);
     return name;
   });
+
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // parse application/json
+  app.use(bodyParser.json());
+  app.use(cookieParser());
+  // nginx代理转发后，要获取正确host需要：
+  app.set('trust proxy', 'loopback');
+  app.set('query parser', 'extended');
 
   const stage = new Stage(stages);
 
