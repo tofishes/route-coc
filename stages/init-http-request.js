@@ -3,7 +3,7 @@ const valueChain = require('../utils/value-chain');
 const methods = ['get', 'post', 'put', 'delete'];
 
 function getRequest() {
-  const config = this.httpRequestConfig || {};
+  const config = this.httpRequestConfig;
   const httpRequest = request(config);
 
   request.methods = methods.map(method => {
