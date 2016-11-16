@@ -15,7 +15,7 @@ module.exports = function runTask(req, res, next) {
     }
 
     return parallelTask.error(error => {
-      next(error);
+      next.origin(error);
     }).run(() => {
       handleData();
       next();
@@ -24,7 +24,7 @@ module.exports = function runTask(req, res, next) {
 
   if (seriesTask) {
     seriesTask.error(error => {
-      next(error);
+      next.origin(error);
     }).run(() => {
       if (res.forwardSent || res.hasSent || res.headersSent) {
         return;

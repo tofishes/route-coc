@@ -89,7 +89,7 @@ Stage.prototype.handle = function handle(req, res, next) {
     actions[stageIndex](req, res, nextStage);
   };
   // 提供跳过stage处理流程的功能
-  nextStage.stageOver = originNext;
+  nextStage.origin = originNext;
 
   // 添加扩展属性
   // 增加一个pathname自定义属性，用于取代req.path
