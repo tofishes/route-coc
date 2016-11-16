@@ -4,10 +4,18 @@ const app = require('../example/example');
 describe('App server request', () => {
   it('should can visit', done => {
     request(app)
-      .get('/proxy-api')
+      .get('/comment/list')
       .set('Accept', 'application/html')
       .expect('Content-Type', /html/)
-      .expect(200, done);
+      .expect(200, /热门评论/, done);
+  });
+
+  it('should be ok visit cache data', done => {
+    request(app)
+      .get('/comment/list')
+      .set('Accept', 'application/html')
+      .expect('Content-Type', /html/)
+      .expect(200, /热门评论/, done);
   });
 
   it('should return 404', done => {
@@ -165,7 +173,7 @@ describe('Interceptors', () => {
       .end(done);
   });
 
-  it('should intercept and get comment list', done => {
+  it('should intercept and get comment list from cache and cache is func', done => {
     request(app)
       .get('/test/intercept/series/comments')
       .expect(res => {

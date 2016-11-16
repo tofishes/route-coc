@@ -21,7 +21,7 @@ module.exports = {
       'proxy': true
     }
   },
-  '/proxy-api': {
+  '/comment/list': {
     'get': {
       'api': [
         {
@@ -37,14 +37,18 @@ module.exports = {
               'type': 1
             };
           },
-          handle(data) {
-            return data.getValue('data.list');
+          handle(data, req, res) {
+            const list = data.getValue('data.list');
+            if (list) {
+              return list;
+            }
+            return res.status(500).send('get cache data error');
           }
         }
       ],
       'timeout': 1000,
       handle(data) {
-        this.view = 'proxy';
+        this.view = 'comments';
         return data;
       }
     }
@@ -52,6 +56,7 @@ module.exports = {
   '/test/intercept/series/comments': {
     'get': {
       handle(data, req, res) {
+        console.log(data, '!!!!!!!!!!')
         res.send(!!data.getValue('comments.data.list', []).length);
       }
     }

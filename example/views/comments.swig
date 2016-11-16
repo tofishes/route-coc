@@ -38,6 +38,7 @@
 </head>
 <body>
   <h4>热门评论：</h4>
+
   {% for comment in comments %}
   <section>
     <img class="avatar" src="{{ comment.userInfo.avatar }}" alt="">

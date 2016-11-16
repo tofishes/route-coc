@@ -9,6 +9,9 @@ module.exports = {
     'api': 'http://shop.mogujie.com/ajax/pc.rate.ratelist/v1',
     'series': true,
     'name': 'comments',
+    cache() {
+      return true;
+    },
     query() {
       return {
         'pageSize': 20,
