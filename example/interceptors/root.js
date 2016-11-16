@@ -19,7 +19,6 @@ module.exports = {
       };
     },
     handle(data) {
-      console.log(data, '**********')
       return data;
     }
   },

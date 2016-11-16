@@ -52,12 +52,7 @@ module.exports = {
   '/test/intercept/series/comments': {
     'get': {
       handle(data, req, res) {
-        console.log(data, '+++++')
-        if (data.comments && data.comments.length) {
-          return res.send(true);
-        }
-
-        return res.send(false);
+        res.send(!!data.getValue('comments.data.list', []).length);
       }
     }
   }
