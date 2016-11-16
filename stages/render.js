@@ -4,12 +4,6 @@ const log = require('t-log');
 
 function render(req, res, next) {
   const app = req.app;
-  const router = req.router;
-
-  if (!router) {
-    return next();
-  }
-
   const filePath = res.viewFile;
 
   if (!filePath) {

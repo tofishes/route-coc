@@ -3,11 +3,7 @@ const typeOf = require('../utils/typeof');
 
 function getViewPath(req, res, next) {
   const app = req.app;
-  const router = req.router;
-
-  if (!router) {
-    return next();
-  }
+  const router = req.router || {};
 
   let view = router.view;
 
@@ -27,7 +23,8 @@ function getViewPath(req, res, next) {
   let ext = path.extname(view);
 
   if (!ext && !defaultEngine) {
-    throw new Error('No default engine was specified and no extension was provided.');
+    const error = new Error('No default engine was specified and no extension was provided.');
+    return next(error);
   }
 
   if (!ext) {
