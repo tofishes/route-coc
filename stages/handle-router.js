@@ -10,31 +10,33 @@ function isString(obj) {
 function handleConfig(configArg, req, res) {
   // 删除了config属性，这里必须克隆，避免影响原对象
   let config = configArg;
+  let router = configArg;
 
   if (!config) {
-    return configArg;
+    return router;
   }
 
   if (isFunc(config)) {
-    config = config(req, res);
+    config = router = config(req, res);
   }
 
   let api = config.api;
   const isInterceptor = config.type === 'interceptor';
-
-  // 无api配置，直接执行下一个stage
-  if (!api) {
-    if (isInterceptor && config.handle) {
-      res.apiData = config.handle.call(config, res.apiData, req, res) || res.apiData;
-    }
-    return configArg;
-  }
 
   // 统一api配置数据结构
   // api可以是字符串，字符串数组，对象混合字符串数组，函数(返回前面3中类型数据)
   if (isFunc(api)) {
     api = api.call(config, req, res);
   }
+
+  // 无api配置，直接执行下一个stage
+  if (!api) {
+    if (isInterceptor && config.handle) {
+      res.apiData = config.handle.call(config, res.apiData, req, res) || res.apiData;
+    }
+    return config;
+  }
+
   // 统一格式
   const query = config.query;
   const body = config.body;
@@ -49,7 +51,7 @@ function handleConfig(configArg, req, res) {
   }
 
   if (! Array.isArray(api)) {
-    throw new TypeError('The type of api must be String or Array');
+    throw new TypeError('The type of api must be String or Array or Function');
   }
 
   const isSeries = config.series;
@@ -103,7 +105,7 @@ function handleConfig(configArg, req, res) {
 
   req.apisTask[taskName] = task;
 
-  return configArg;
+  return router;
 }
 /**
  * 处理路由
@@ -113,7 +115,7 @@ function handleConfig(configArg, req, res) {
  * @return {[type]}        [description]
  */
 function handleRouter(req, res, next) {
-  handleConfig(req.router, req, res);
+  req.router = handleConfig(req.router, req, res);
 
   return next();
 }
