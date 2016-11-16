@@ -10,14 +10,16 @@ function getViewPath(req, res, next) {
   if (!view) {
     view = req.path;
   }
+
+  if (typeOf(view).is('function')) {
+    view = view.call(router, req, res);
+  }
+
   // view配置可以不以/开头
   if (!view.startsWith('/')) {
     view = `/${view}`;
   }
 
-  if (typeOf(view).is('function')) {
-    view = view.call(router, req, res);
-  }
   // 已设置默认引擎
   const defaultEngine = app.get('view engine');
   let ext = path.extname(view);
