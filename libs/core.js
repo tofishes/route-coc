@@ -58,7 +58,9 @@ module.exports = (app, args = {}) => {
     viewDir = defaultViewDir,
     viewExclude = ['**/include/**'], // 排除自动渲染模板的目录
     stages = defaultStages,       // 默认stage列表
-    mount = '/'                   // 程序挂载路径，类型符合express path examples
+    mount = '/',                  // 程序挂载路径，类型符合express path examples
+    apiDataCache = memoryCache,
+    handleAPI = url => url
   } = args;
 
   const interceptorMap = loadRoutes(interceptorDir);
@@ -81,13 +83,9 @@ module.exports = (app, args = {}) => {
     app.set('view engine', 'swig');
   }
   // 设置接口数据缓存方法
-  if (!app.get('apiDataCache')) {
-    app.set('apiDataCache', memoryCache);
-  }
+  app.set('apiDataCache', apiDataCache);
   // 设置接口地址处理方法
-  if (!app.get('handleAPI')) {
-    app.set('handleAPI', url => url);
-  }
+  app.set('handleAPI', handleAPI);
 
   Object.keys(args).map(name => {
     app.set(name, args[name]);
@@ -110,13 +108,7 @@ module.exports = (app, args = {}) => {
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
   });
-  app.use((error, req, res, next) => {
-    if (error) {
-      return res.status(500).send(`<pre>${error.stack}</pre>`);
-    }
-
-    return next();
-  });
+  app.use((error, req, res, next) => res.status(500).send(`<pre>${error.stack}</pre>`));
 
   return stage;
 };
