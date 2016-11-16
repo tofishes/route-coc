@@ -112,7 +112,7 @@ module.exports = (app, args = {}) => {
   });
   app.use((error, req, res, next) => {
     if (error) {
-      return res.status(500).send(error);
+      return res.status(500).send(`<pre>${error.stack}</pre>`);
     }
 
     return next();
