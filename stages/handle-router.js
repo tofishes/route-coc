@@ -19,16 +19,17 @@ function handleConfig(configArg, req, res) {
     config = config(req, res);
   }
 
-  // 无api配置，直接执行下一个stage
-  if (!config.api) {
-    if (config.handle) {
-      res.apiData = config.handle(res.apiData, req, res);
-    }
+  let api = config.api;
+  const isInterceptor = config.type === 'interceptor';
 
+  // 无api配置，直接执行下一个stage
+  if (!api) {
+    if (isInterceptor && config.handle) {
+      res.apiData = config.handle.call(config, res.apiData, req, res) || res.apiData;
+    }
     return configArg;
   }
 
-  let api = config.api;
   // 统一api配置数据结构
   // api可以是字符串，字符串数组，对象混合字符串数组，函数(返回前面3中类型数据)
   if (isFunc(api)) {
@@ -43,7 +44,7 @@ function handleConfig(configArg, req, res) {
   // 如果是拦截器，需要把handle合并进来
   // 拦截器api为非字符串型时，仅支持数组项内的handle，不支持全局handle
   if (isString(api)) {
-    const handle = config.type === 'interceptor' ? config.handle : null;
+    const handle = isInterceptor ? config.handle : null;
     api = [{ api, handle }];
   }
 
@@ -96,7 +97,6 @@ function handleConfig(configArg, req, res) {
     if (isFunc(apiItem.cache)) {
       apiItem.cache = excute(apiItem.cache);
     }
-
     // TODO 通过app.set自定义api任务方法
     return task.addApiTask(apiItem);
   });

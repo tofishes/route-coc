@@ -2,18 +2,22 @@ module.exports = function runTask(req, res, next) {
   const seriesTask = req.apisTask.series;
   const parallelTask = req.apisTask.parallel;
 
+  function handleData() {
+    if (req.router && req.router.handle) {
+      res.apiData = req.router.handle(res.apiData, req, res);
+    }
+  }
+
   const runParallelTask = () => {
     if (!parallelTask) {
+      handleData();
       return next();
     }
 
     return parallelTask.error(error => {
       next(error);
     }).run(() => {
-      if (req.router.handle) {
-        res.apiData = req.router.handle(res.apiData, req, res);
-      }
-
+      handleData();
       next();
     });
   };
