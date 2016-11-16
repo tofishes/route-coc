@@ -27,5 +27,37 @@ module.exports = {
         res.json(req.body);
       }
     }
+  },
+  '/api/is/array': {
+    'get': {
+      'api': ['http://www.baidu.com', {
+        'api': 'http://www.163.com'
+      }, function api() {
+        return 'http://www.xunlei.com';
+      }, function apiReturnNull() {
+        return null;
+      }],
+      handle(data, req, res) {
+        res.send('api-is-array');
+      }
+    }
+  },
+  '/api/is/function': {
+    'get': {
+      api() {
+        this.view = 'api-is-function';
+        return null;
+      }
+    }
+  },
+  '/config/is/function': {
+    get() {
+      return {
+        api() {
+          this.view = 'api-is-function';
+          return null;
+        }
+      };
+    }
   }
 };

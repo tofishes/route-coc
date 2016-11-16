@@ -184,3 +184,21 @@ describe('Interceptors', () => {
       .end(done);
   });
 });
+
+describe('Config is function', () => {
+  it('should be ok when api is Array', done => {
+    request(app)
+      .get('/api/is/array')
+      .expect(200, /api-is-array/, done);
+  });
+  it('should be ok when config is Function', done => {
+    request(app)
+      .get('/config/is/function')
+      .expect(200, /api-is-function/, done);
+  });
+  it('should be ok when api is Function', done => {
+    request(app)
+      .get('/api/is/function')
+      .expect(200, /api-is-function/, done);
+  });
+});

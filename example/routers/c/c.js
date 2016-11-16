@@ -37,12 +37,8 @@ module.exports = {
               'type': 1
             };
           },
-          handle(data, req, res) {
-            const list = data.getValue('data.list');
-            if (list) {
-              return list;
-            }
-            return res.status(500).send('get cache data error');
+          handle(data) {
+            return data.getValue('data.list');
           }
         }
       ],
