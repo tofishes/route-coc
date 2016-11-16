@@ -5,11 +5,6 @@ const log = require('t-log');
 function render(req, res, next) {
   const app = req.app;
   const filePath = res.viewFile;
-
-  if (!filePath) {
-    return next();
-  }
-
   const excludes = app.get('viewExclude')
     .filter(exclude => minimatch(filePath, exclude));
 
