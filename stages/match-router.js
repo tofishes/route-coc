@@ -58,9 +58,7 @@ function matchRouter(req, res, next) {
   // 合并参数
   Object.assign(req.query, param);
   // 若未使用body-parser，req.body为undefined
-  if (req.body) {
-    Object.assign(req.body, param);
-  }
+  Object.assign(req.body, param);
 
   return next();
 }
