@@ -101,7 +101,9 @@ Stage.prototype.handle = function handle(req, res, next) {
   res.apiInfo = {};
   res.forward = pathname => {
     if (pathname === req.path) {
-      throw new Error('foward path cannot be the same as req.path!');
+      const error = new Error('foward path cannot be the same as req.path!');
+      originNext(error);
+      return;
     }
 
     res.forwardSent = true;
