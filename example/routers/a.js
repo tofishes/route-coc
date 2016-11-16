@@ -8,7 +8,9 @@ module.exports = {
       handle(data, req) {
         return { 'username': req.query.username };
       },
-      'view': 'hello'
+      view() {
+        return 'hello';
+      }
     }
   },
   '/forward/to/self': {

@@ -31,12 +31,13 @@ describe('App server request', () => {
   it('should proxy from baidu', done => {
     request(app)
       .get('/proxy')
-      .expect(res => {
-        if (!~res.text.indexOf('百度一下，你就知道')) {
-          throw new Error('not baidu content');
-        }
-      })
-      .end(done);
+      .expect(200, /百度一下，你就知道/, done);
+  });
+
+  it('should error when forward to current req path', done => {
+    request(app)
+      .get('/forward/to/self')
+      .expect(500, /foward path cannot be the same as req.path/, done);
   });
 
   // filters
@@ -58,6 +59,7 @@ describe('render view and parse query', () => {
       .get('/post')
       .expect(405, done);
   });
+
   it('should render hello username', done => {
     request(app)
       .get('/hello/bodhi')
@@ -100,6 +102,22 @@ describe('render view and parse query', () => {
         }
       })
       .end(done);
+  });
+
+  it('should 404 when visit not exist file view', done => {
+    request(app)
+      .get('/not/exist/view')
+      .expect(404, done);
+  });
+  it('should 404 when visit exlucde view path', done => {
+    request(app)
+      .get('/include/header')
+      .expect(404, done);
+  });
+  it('should 200 when visit module view path', done => {
+    request(app)
+      .get('/module/head')
+      .expect(200, /include/, done);
   });
 });
 
