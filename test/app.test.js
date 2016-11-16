@@ -50,8 +50,9 @@ describe('App server request', () => {
       })
       .end(done);
   });
+});
 
-  // render view and parse query
+describe('render view and parse query', () => {
   it('should 405 method not allowed', done => {
     request(app)
       .get('/post')
@@ -84,6 +85,17 @@ describe('App server request', () => {
       .send({ age: 11 })
       .expect(res => {
         if (res.text !== 'name: bodhi, age: 11') {
+          throw new Error('handle body param error');
+        }
+      })
+      .end(done);
+  });
+
+  it('should auto render', done => {
+    request(app)
+      .get('/auto-render')
+      .expect(res => {
+        if (res.text !== 'auto-render') {
           throw new Error('handle body param error');
         }
       })
