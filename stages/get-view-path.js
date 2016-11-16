@@ -18,14 +18,9 @@ function getViewPath(req, res, next) {
   if (typeOf(view).is('function')) {
     view = view.call(router, req, res);
   }
-
+  // 已设置默认引擎
   const defaultEngine = app.get('view engine');
   let ext = path.extname(view);
-
-  if (!ext && !defaultEngine) {
-    const error = new Error('No default engine was specified and no extension was provided.');
-    return next(error);
-  }
 
   if (!ext) {
     ext = defaultEngine.startsWith('.') ? defaultEngine : `.${defaultEngine}`;
