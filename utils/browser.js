@@ -33,8 +33,8 @@ module.exports = (userAgent) => {
     mobile,
     isWechat,
     ie: kernel === 'msie',
-    gecko: (ua.indexOf('gecko') > -1 && ua.indexOf('khtml') === -1),
-    webkit: (ua.indexOf('webkit') > -1),
-    opera: (ua.indexOf('opera') > -1),
+    gecko: !!~ua.indexOf('gecko') && ua.indexOf('khtml') === -1,
+    webkit: !!~ua.indexOf('webkit'),
+    opera: !!~ua.indexOf('opera'),
   };
 };
