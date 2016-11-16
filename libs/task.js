@@ -89,11 +89,16 @@ class Task {
 
       if (cache) {
         const getCache = req.app.get('apiDataCache');
-        const result = getCache.call(req.router, url);
+        let result = getCache.call(req.router, url);
 
         if (result) {
           res.apiInfo[dataName].consumeTime = timer.end();
-          res.apiData[dataName] = result;
+
+          if (apiConfig.handle) {
+            result = apiConfig.handle.call(req.router, result, req, res);
+          }
+
+          res.apiData[dataName] = valueChain.set(result);
 
           callback(null, result);
           return;
@@ -130,17 +135,17 @@ class Task {
             };
           }
         }
+        // 必须缓存原始数据，否则不同路由的数据共享在handle时会出问题
+        if (willCache) {
+          const setCache = req.app.get('apiDataCache');
+          setCache.call(req.router, url, result);
+        }
 
         if (apiConfig.handle) {
           result = apiConfig.handle.call(req.router, result, req, res);
         }
 
         res.apiData[dataName] = valueChain.set(result);
-
-        if (willCache) {
-          const setCache = req.app.get('apiDataCache');
-          setCache.call(req.router, url, result);
-        }
 
         return callback(error, result);
       };
