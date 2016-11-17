@@ -60,9 +60,14 @@ Stage.prototype.handle = function handle(req, res, next) {
   const originNext = next;
   const startIndex = 0;
   // 特别注意，nextStage不应改变全局变量
-  const nextStage = () => {
+  const nextStage = (error) => {
     // 已响应了客户端，则不再继续任何处理
     if (res.hasSent || res.headersSent) {
+      return;
+    }
+
+    if (error) {
+      originNext(error);
       return;
     }
 
