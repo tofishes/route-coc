@@ -30,10 +30,10 @@ module.exports = {
   },
   '/api/is/array': {
     'get': {
-      'api': ['http://www.baidu.com', {
-        'api': 'http://www.163.com'
+      'api': ['http://localhost:8080/api/is/function', {
+        'api': 'http://localhost:8080/config/is/function'
       }, function api() {
-        return 'http://www.xunlei.com';
+        return 'http://localhost:8080/hello';
       }, function apiReturnNull() {
         return null;
       }],
