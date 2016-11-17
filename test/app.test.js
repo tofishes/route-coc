@@ -183,6 +183,18 @@ describe('Interceptors', () => {
       })
       .end(done);
   });
+
+  it('should interceptor response', done => {
+    request(app)
+      .get('/intercept/has/redirect/this-is-not-excute')
+      .expect(200, /interceptor response/, done);
+  });
+
+  it('should interceptor forward', done => {
+    request(app)
+      .get('/intercept/has/forward/this-is-not-excute')
+      .expect(200, /hello world/, done);
+  });
 });
 
 describe('Config is function', () => {
@@ -200,5 +212,19 @@ describe('Config is function', () => {
     request(app)
       .get('/api/is/function')
       .expect(200, /api-is-function/, done);
+  });
+});
+
+describe('Task run', () => {
+  it('should 500 when api url is wrong', done => {
+    request(app)
+      .get('/task/error')
+      .expect(500, /Invalid URI/, done);
+  });
+
+  it('should 500 when api url of series interceptor is wrong', done => {
+    request(app)
+      .get('/intercept/api/wrong/this-is-not-excute')
+      .expect(500, /Invalid URI/, done);
   });
 });

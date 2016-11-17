@@ -19,5 +19,10 @@ module.exports = {
         res.forward('/forward/to/self');
       }
     }
+  },
+  '/task/error': {
+    'get': {
+      'api': '/api/error/task'
+    }
   }
 };

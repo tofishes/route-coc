@@ -34,5 +34,19 @@ module.exports = {
     handle(data, req, res) {
       res.send('no intercept ext');
     }
+  },
+  '/intercept/api/wrong/*': {
+    'api': '/api/is/wrong',
+    'series': true
+  },
+  '/intercept/has/redirect/*': {
+    handle(data, req, res) {
+      res.status(200).send('interceptor response');
+    }
+  },
+  '/intercept/has/forward/*': {
+    handle(data, req, res) {
+      res.forward('/hello');
+    }
   }
 };
