@@ -3,9 +3,7 @@ node_js:
   - "6"
   - "node"
 script:
-  - npm run cover-ci
-after_script:
-  - npm install coveralls@2.10.0 && cat ./coverage/lcov.info | coveralls
+  - npm run cover
 branches:
   only:
     - master
