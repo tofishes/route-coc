@@ -6,7 +6,7 @@ module.exports = {
     }
   },
   '/test/intercept/series/*': {
-    'api': 'http://shop.mogujie.com/ajax/pc.rate.ratelist/v1',
+    'api': 'http://localhost:8080/api/comment/list',
     'series': true,
     'name': 'comments',
     cache() {

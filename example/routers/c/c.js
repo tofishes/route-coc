@@ -1,4 +1,5 @@
 const log = require('t-log');
+const commentList = require('../../data/comment-list.json');
 
 module.exports = {
   '/hello': {
@@ -21,11 +22,18 @@ module.exports = {
       'proxy': true
     }
   },
+  '/api/comment/list': {
+    'get': {
+      handle(data, req, res) {
+        res.json(commentList);
+      }
+    }
+  },
   '/comment/list': {
     'get': {
       'api': [
         {
-          'api': 'http://shop.mogujie.com/ajax/pc.rate.ratelist/v1',
+          'api': 'get:http://localhost:8080/api/comment/list',
           'name': 'comments',
           'cache': true,
           query() {
