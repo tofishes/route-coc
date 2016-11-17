@@ -5,7 +5,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/tofishes/route-coc.svg)](https://coveralls.io/r/tofishes/route-coc?branch=master)
 [![bitHound Score](https://www.bithound.io/github/tofishes/route-coc/badges/score.svg)](https://www.bithound.io/github/tofishes/route-coc)
 
-[![NPM](https://nodei.co/npm/istanbul.png?downloads=true)](https://nodei.co/npm/istanbul/)
+[![NPM](https://nodei.co/npm/route-coc.png?downloads=true&stars=true)](https://nodei.co/npm/route-coc/)
 基于express.js用于简化前端页面直出流程的框架。
 coc 意为 约定优于配置（convention over configuration）。
 
