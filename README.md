@@ -81,3 +81,7 @@ class Task {
 
 ### 备注
 * 曾考虑过这样一种优化，根据get/post等方法细分routers，然后根据req.method得到一个较小的子集，这样循环匹配路由是不是可以更快一些。但是被自己否定了，如果这样做了，会隐藏掉一些错误，比如配置了一个get请求，但实际是用post，这样不能匹配到路由，也不能用405状态提示使用者，会让使用者难以发现问题。
+
+## Release
+* v1.0.0 stable version
+* alpha not surport
