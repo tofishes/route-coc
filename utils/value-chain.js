@@ -28,7 +28,9 @@ function valueChain(data, chain, defaultVal) {
 // at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:358:11)
 //
 // https://www.alexkras.com/typeerror-the-header-content-contains-invalid-characters/
-function getValue(chain, defaultVal) { return valueChain(this, chain, defaultVal); }
+function getValue(chain, defaultVal) { return valueChain.set(valueChain(this, chain, defaultVal)); }
+function getList(chain) { return getValue.call(this, chain, []); }
+function getMap(chain) { return getValue.call(this, chain, {}); }
 
 valueChain.set = obj => {
   if (!obj) {
@@ -37,6 +39,8 @@ valueChain.set = obj => {
   // 扩展数据原型，增加getValue方法
   const proto = Object.getPrototypeOf(obj);
   proto.getValue = getValue;
+  proto.getList = getList;
+  proto.getMap = getMap;
 
   return obj;
 };
