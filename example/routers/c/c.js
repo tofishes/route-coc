@@ -46,7 +46,7 @@ module.exports = {
             };
           },
           handle(data) {
-            return data.getValue('data.list');
+            return data.getList('data.list');
           }
         }
       ],
@@ -60,7 +60,7 @@ module.exports = {
   '/test/intercept/series/comments': {
     'get': {
       handle(data, req, res) {
-        res.send(!!data.getValue('comments.data.list', []).length);
+        res.send(!!data.getList('comments.data.list').length);
       }
     }
   }
