@@ -53,10 +53,10 @@ describe('util value-chain', () => {
   });
 
   it('should can get defalut array when use property getList', () => {
-    data.getList('user.gender').should.be.instanceof(Array).and.have.lengthOf(0);
+    data.getList('user.gender').should.be.Array().and.be.empty();
   });
   it('should can get defalut object when use property getMap', () => {
-    data.getMap('user.gender').should.be.an.instanceOf(Object);
+    data.getMap('user.gender').should.be.an.Object().and.be.empty();
   });
 
   it('should can be chainning of the getValue', () => {
