@@ -108,7 +108,7 @@ class Task {
       const complete = (error, response, resBody) => {
         const consumeTime = timer.end();
         const headers = response && response.headers;
-        Object.assign(res.apiInfo[dataName], { consumeTime, headers });
+        Object.assign(res.apiInfo[dataName], { consumeTime, headers, resBody });
 
         let result = resBody;
         let willCache = !!cache;
