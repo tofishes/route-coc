@@ -59,8 +59,8 @@ module.exports = (app, args = {}) => {
     viewExclude = ['**/include/**'], // 排除自动渲染模板的目录
     stages = defaultStages,       // 默认stage列表
     mount = '/',                  // 程序挂载路径，类型符合express path examples
-    apiDataCache = memoryCache,
-    handleAPI = url => url
+    apiDataCache = memoryCache,   // 接口数据缓存方法，默认存储于内存中
+    handleAPI = url => url        // api地址预处理方法
   } = args;
 
   const interceptorMap = loadRoutes(interceptorDir);
@@ -78,6 +78,9 @@ module.exports = (app, args = {}) => {
   app.set('views', viewDir);
   app.set('viewExclude', viewExclude);
   app.engine('swig', swig.renderFile);
+  swig.setDefaults({
+    loader: swig.loaders.fs(viewDir)
+  });
   // 设置引擎默认后缀
   if (!app.get('view engine')) {
     app.set('view engine', 'swig');
@@ -104,6 +107,7 @@ module.exports = (app, args = {}) => {
   const stage = new Stage(stages);
 
   stage.set('app', app);
+  stage.set('swig', swig);
 
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
