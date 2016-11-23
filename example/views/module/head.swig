@@ -1,1 +1,1 @@
-{% include "../include/header.swig" %}
+{% include "include/header.swig" %}
