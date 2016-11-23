@@ -18,8 +18,9 @@ function render(req, res, next) {
   return fs.exists(filePath, exists => {
     if (exists) {
       const engine = app.engines[res.viewExt];
-      const data = Object.assign(res.locals, res.apiData);
-      // 手动调用有利于错误捕捉
+      // res.locals 不具有 hasOwnProperty 方法，在swig设置locals后会报错
+      const data = Object.assign(res.apiData, res.locals);
+      // 手动渲染有利于domain的错误捕捉，res.render会隐藏一些问题
       res.send(engine(filePath, data));
     } else {
       next();
