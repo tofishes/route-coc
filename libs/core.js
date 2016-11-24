@@ -53,14 +53,14 @@ module.exports = (app, args = {}) => {
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
-    routerDir = defaultRouterDir, // 路由目录
+    routerDir = defaultRouterDir,           // 路由目录
     interceptorDir = defaultInterceptorDir, // 拦截器目录
-    viewDir = defaultViewDir,
-    viewExclude = ['**/include/**'], // 排除自动渲染模板的目录
-    stages = defaultStages,       // 默认stage列表
-    mount = '/',                  // 程序挂载路径，类型符合express path examples
-    apiDataCache = memoryCache,   // 接口数据缓存方法，默认存储于内存中
-    handleAPI = url => url        // api地址预处理方法
+    viewDir = defaultViewDir,               // 视图模板目录
+    viewExclude = ['**/include/**'],        // 排除自动渲染模板的目录，采用glob匹配规则
+    stages = defaultStages,                 // 默认stage列表
+    mount = '/',                            // 程序挂载路径，默认为根路径，类型符合express path examples
+    apiDataCache = memoryCache,             // 接口数据缓存方法，默认存储于内存中
+    handleAPI = url => url                  // router.api地址预处理方法，默认返回自身
   } = args;
 
   const interceptorMap = loadRoutes(interceptorDir);
