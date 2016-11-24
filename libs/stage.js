@@ -16,6 +16,7 @@ function Stage(stages) {
   });
   this.befores = befores;
   this.afters = afters;
+  this.props = {};
 }
 
 ['before', 'after'].map(filterName => {
@@ -48,12 +49,12 @@ Stage.prototype.merge = function merge() {
     return null;
   });
 };
-Stage.prototype.set = function set(prop, value) {
-  this[prop] = value;
+Stage.prototype.set = function set(name, value) {
+  this.props[name] = value;
   return this;
 };
-Stage.prototype.get = function get(prop) {
-  return this[prop];
+Stage.prototype.get = function get(name) {
+  return this.props[name];
 };
 Stage.prototype.handle = function handle(req, res, next) {
   const actions = this.actions;
