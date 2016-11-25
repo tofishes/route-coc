@@ -22,10 +22,10 @@ function valueChain(data, chain, defaultVal) {
   return value;
 }
 // strange! 非常奇怪，getValue函数定义不能换行，否则只要对data做了原型扩展，
-// 暂不清楚，换行对headers设置有何种影响
-// 在代理转发的地方(request-proxy.js)pipe(res)就会报如下错误：
+// 在渲染视图及代理转发的地方(request-proxy.js)pipe(res)就会报如下错误：
 // TypeError: The header content contains invalid characters
 // at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:358:11)
+// 暂不清楚，换行对headers设置有何种影响
 //
 // https://www.alexkras.com/typeerror-the-header-content-contains-invalid-characters/
 function getValue(chain, defaultVal) { return valueChain.set(valueChain(this, chain, defaultVal)); }
