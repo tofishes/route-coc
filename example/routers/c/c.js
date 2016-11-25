@@ -63,5 +63,26 @@ module.exports = {
         res.send(!!data.getList('comments.data.list').length);
       }
     }
+  },
+  '/mixed/api-config': {
+    'get': {
+      api() {
+        return ['http://localhost:8080/test/intercept/series/comments',
+          {
+            api: 'http://localhost:8080/comment/list',
+            name: 'commentPage'
+          },
+          () => ({
+            api: 'http://localhost:8080/api/comment/list',
+            name: 'commentJson'
+          })
+        ];
+      },
+      name: 'real',
+      handle(data, req, res) {
+        const result = data.real && data.commentJson && data.commentPage;
+        res.send(!!result);
+      }
+    }
   }
 };

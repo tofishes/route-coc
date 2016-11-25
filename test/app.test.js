@@ -213,6 +213,11 @@ describe('Config is function', () => {
       .get('/api/is/function')
       .expect(200, /api-is-function/, done);
   });
+  it('should be ok when api is mixed types', done => {
+    request(app)
+      .get('/mixed/api-config')
+      .expect(200, /true/, done);
+  });
 });
 
 describe('Task run', () => {
