@@ -1,7 +1,7 @@
 const async = require('async');
 const log = require('t-log');
 const env = require('../utils/env');
-const valueChain = require('../utils/value-chain');
+const valueChain = require('value-chain');
 
 class Task {
 

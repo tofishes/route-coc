@@ -1,5 +1,5 @@
 const request = require('../utils/request');
-const valueChain = require('../utils/value-chain');
+const valueChain = require('value-chain');
 const methods = ['get', 'post', 'put', 'delete'];
 
 function getRequest() {

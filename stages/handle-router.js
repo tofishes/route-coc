@@ -1,6 +1,6 @@
 const typeOf = require('../utils/typeof');
 const Task = require('../libs/task');
-const valueChain = require('../utils/value-chain');
+const valueChain = require('value-chain');
 
 function isFunc(obj) {
   return typeOf(obj).is('function');

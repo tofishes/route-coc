@@ -1,4 +1,4 @@
-const valueChain = require('../utils/value-chain');
+const valueChain = require('value-chain');
 
 module.exports = function runTask(req, res, next) {
   const seriesTask = req.apisTask.series;
