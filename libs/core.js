@@ -112,7 +112,6 @@ module.exports = (app, args = {}) => {
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
   });
-  app.use((error, req, res, next) => res.status(500).send(`<pre>${error.stack}</pre>`));
 
   return stage;
 };
