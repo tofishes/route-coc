@@ -1,5 +1,6 @@
 const typeOf = require('../utils/typeof');
 const Task = require('../libs/task');
+const valueChain = require('../utils/value-chain');
 
 function isFunc(obj) {
   return typeOf(obj).is('function');
@@ -32,7 +33,17 @@ function handleConfig(configArg, req, res) {
   // 无api配置，直接执行下一个stage
   if (!api) {
     if (isInterceptor && config.handle) {
-      res.apiData = config.handle.call(config, res.apiData, req, res) || res.apiData;
+      const data = config.handle(res.apiData, req, res);
+
+      if (data) {
+        valueChain.set(data);
+      }
+
+      if (config.name) {
+        res.apiData[config.name] = data;
+      } else {
+        res.apiData = data || res.apiData;
+      }
     }
     return config;
   }
@@ -80,6 +91,7 @@ function handleConfig(configArg, req, res) {
         apiItem = { 'api': apiItem };
       }
     }
+
     // 默认为对象类型，合并第一级配置的参数处理器
     apiItem = Object.assign({ query, body, name, cache }, apiItem);
 

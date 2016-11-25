@@ -1,10 +1,24 @@
+const valueChain = require('../utils/value-chain');
+
 module.exports = function runTask(req, res, next) {
   const seriesTask = req.apisTask.series;
   const parallelTask = req.apisTask.parallel;
 
   function handleData() {
-    if (req.router && req.router.handle) {
-      res.apiData = req.router.handle(res.apiData, req, res);
+    const router = req.router;
+
+    if (router && router.handle) {
+      const data = router.handle(res.apiData, req, res);
+
+      if (data) {
+        valueChain.set(data);
+      }
+
+      if (router.name) {
+        res.apiData[router.name] = data;
+      } else {
+        res.apiData = data || res.apiData;
+      }
     }
   }
 
