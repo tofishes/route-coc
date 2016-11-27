@@ -36,6 +36,10 @@ function loadRoutes(dir) {
   return map;
 }
 
+function simpleApiDataName(api) {
+  return api.substr(api.lastIndexOf('/') + 1);
+}
+
 /**
  * 框架定名 route-coc，基于express.js用于简化前端页面直出流程的框架
  * coc 意为 约定优于配置（convention over configuration）
@@ -60,6 +64,7 @@ module.exports = (app, args = {}) => {
     stages = defaultStages,                 // 默认stage列表
     mount = '/',                            // 程序挂载路径，默认为根路径，类型符合express path examples
     apiDataCache = memoryCache,             // 接口数据缓存方法，默认存储于内存中
+    apiDataName = simpleApiDataName,                            // 接口数据名方法，默认为获取api地址最后一个/后面的单词名
     handleAPI = url => url                  // router.api地址预处理方法，默认返回自身
   } = args;
 
@@ -68,31 +73,6 @@ module.exports = (app, args = {}) => {
   const routers = parseRouter(routerMap);
   const interceptors = parseRouter(interceptorMap, interceptor => {
     interceptor.type = 'interceptor';
-  });
-
-  // 存储
-  app.set('interceptorMap', interceptorMap);
-  app.set('interceptors', interceptors);
-  app.set('routerMap', routerMap);
-  app.set('routers', routers);
-  app.set('views', viewDir);
-  app.set('viewExclude', viewExclude);
-  app.engine('swig', swig.renderFile);
-  swig.setDefaults({
-    loader: swig.loaders.fs(viewDir)
-  });
-  // 设置引擎默认后缀
-  if (!app.get('view engine')) {
-    app.set('view engine', 'swig');
-  }
-  // 设置接口数据缓存方法
-  app.set('apiDataCache', apiDataCache);
-  // 设置接口地址处理方法
-  app.set('handleAPI', handleAPI);
-
-  Object.keys(args).map(name => {
-    app.set(name, args[name]);
-    return name;
   });
 
   // parse application/x-www-form-urlencoded
@@ -108,6 +88,29 @@ module.exports = (app, args = {}) => {
 
   stage.set('app', app);
   stage.set('swig', swig);
+  // 存储
+  stage.set('interceptorMap', interceptorMap);
+  stage.set('interceptors', interceptors);
+  stage.set('routerMap', routerMap);
+  stage.set('routers', routers);
+  stage.set('views', viewDir);
+  stage.set('viewExclude', viewExclude);
+  // 保存接口数据缓存方法
+  stage.set('apiDataCache', apiDataCache);
+  // 保存接口数据名方法
+  stage.set('apiDataName', apiDataName);
+  // 保存接口地址处理方法
+  stage.set('handleAPI', handleAPI);
+
+  // 添加swig模板引擎
+  swig.setDefaults({
+    loader: swig.loaders.fs(viewDir)
+  });
+  app.engine('swig', swig.renderFile);
+  // 设置引擎默认后缀
+  if (!app.get('view engine')) {
+    app.set('view engine', 'swig');
+  }
 
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);
