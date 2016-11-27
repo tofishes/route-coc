@@ -9,7 +9,7 @@
  * @return {[type]}        [description]
  */
 function requestProxy(req, res, next) {
-  const handleAPI = req.app.get('handleAPI');
+  const handleAPI = this.get('handleAPI');
   const router = req.router;
   const xhrProxy = !router && req.xhr;
   const routeProxy = router && router.proxy;

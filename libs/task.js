@@ -77,7 +77,7 @@ class Task {
       }
     }
 
-    const handleAPI = req.app.get('handleAPI');
+    const handleAPI = req.stage.get('handleAPI');
     url = handleAPI(url, req);
 
     apiConfig.method = method;
@@ -88,7 +88,7 @@ class Task {
       res.apiInfo[dataName] = apiConfig;
 
       if (cache) {
-        const getCache = req.app.get('apiDataCache');
+        const getCache = req.stage.get('apiDataCache');
         let result = getCache.call(req.router, url);
 
         if (result) {
@@ -137,7 +137,7 @@ class Task {
         }
         // 必须缓存原始数据，否则不同路由的数据共享在handle时会出问题
         if (willCache) {
-          const setCache = req.app.get('apiDataCache');
+          const setCache = req.stage.get('apiDataCache');
           setCache.call(req.router, url, result);
         }
 

@@ -29,7 +29,7 @@ function getViewPath(req, res, next) {
     view += ext;
   }
 
-  const filePath = path.join(app.get('views'), view);
+  const filePath = path.join(this.get('views'), view);
 
   res.viewPath = view;
   res.viewExt = ext;

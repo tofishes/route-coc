@@ -9,6 +9,7 @@ function isString(obj) {
   return typeOf(obj).is('string');
 }
 function handleConfig(configArg, req, res) {
+  const stage = req.stage;
   // 删除了config属性，这里必须克隆，避免影响原对象
   let config = configArg;
   let router = configArg;
@@ -105,7 +106,7 @@ function handleConfig(configArg, req, res) {
     // 数据名
     // TODO 通过app.set自定义处理数据名方法
     if (!apiItem.name) {
-      apiItem.name = apiItem.api.substr(apiItem.api.lastIndexOf('/') + 1);
+      apiItem.name = stage.get('apiDataName').call(router, apiItem.api);
     }
     // 缓存
     if (isFunc(apiItem.cache)) {

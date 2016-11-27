@@ -21,7 +21,7 @@ function match(pathname, interceptors) {
 }
 function handleInterceptor(req, res, next) {
   const pathname = req.pathname;
-  const interceptors = match(pathname, req.app.get('interceptors'));
+  const interceptors = match(pathname, this.get('interceptors'));
 
   if (!interceptors.length) {
     return next();
