@@ -82,17 +82,8 @@ Stage.prototype.handle = function handle(req, res, next) {
     }
 
     req.stageIndex = stageIndex;
-    // TODO nextOnce can't be used;
-    // const nextOnce = () => {
-    //   if (nextOnce.invoked) {
-    //     return;
-    //   }
 
-    //   nextOnce.invoked = true;
-    //   nextStage();
-    // };
-
-    actions[stageIndex](req, res, nextStage);
+    actions[stageIndex].call(this, req, res, nextStage);
   };
   // 提供跳过stage处理流程的功能
   nextStage.origin = originNext;
@@ -102,6 +93,7 @@ Stage.prototype.handle = function handle(req, res, next) {
   // pathname可实现forward功能
   req.pathname = req.path;
   req.stageIndex = startIndex;
+  req.stage = res.stage = this;
 
   res.apiData = {};
   res.apiInfo = {};
@@ -115,10 +107,10 @@ Stage.prototype.handle = function handle(req, res, next) {
     res.forwardSent = true;
     req.pathname = pathname;
     req.stageIndex = 0;
-    actions[req.stageIndex](req, res, nextStage);
+    actions[req.stageIndex].call(this, req, res, nextStage);
   };
 
-  actions[startIndex](req, res, nextStage);
+  actions[startIndex].call(this, req, res, nextStage);
 };
 
 module.exports = Stage;
