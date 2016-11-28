@@ -51,4 +51,4 @@ $ cd route-coc/example
 
 ### License
 
-MIT
+[MIT](https://github.com/tofishes/route-coc/blob/master/LICENSE)
