@@ -11,42 +11,44 @@ coc 意为 约定优于配置（convention over configuration）。
 
 route-coc已经规定好 拦截器-路由-页面渲染 这样的一个流程，使用者只需配置一些与业务相关的代码，即可方便的启动一个项目服务。
 
-### 功能
-* 简单配置可以实现接口数据的获取及页面渲染
-* 自定义流程及过滤器
-* 拦截器
-* res.forward服务器内跳转
+### Installation 安装
 
-**约定的概念及属性：**
+`$ npm install route-coc`
 
-#### 路由
-* route - 路由、路线，仅指字符串路径，例如 '/hello/:name'
-* router - 路由器，指包含route在内的一个配置对象
+### Features 功能
+* Router config file 简单配置可以实现接口数据的获取及页面渲染
+* Filters 过滤器
+* Interceptors 拦截器
+* res.forward 服务器内跳转
+* default template engine 默认使用swig模板引擎
 
-#### 参数，因为都是一个对象，因此使用单数形式，而非复数
-* query: get请求地址?后跟的参数，req.query
-* body: post请求体参数，req.body
-* param: 路由中定义的参数，req.param <br>
-  param将被分别合并到req.query, req.body
+### Quick Start 开始使用
+ ```
+  const express = require('express');
+  const coc = require('route-coc');
 
-#### Stage, 工作流程的一个场景，每个stage完成一件事并可以产出特定结果。
+  const app = express();
+  const stage = coc(app);
 
-可以用before,after方法对stage添加预处理流程或后处理流程。
+  const port = 8080;
+  app.listen(port, () => {
+    const startInfo = `server run at http:\/\/localhost:${port}`;
 
-目前内置的工作流程有：
+    console.log(startInfo);
+  });
+  ```
+
+### Docs 文档
+
+[route-coc doument](https://tofishes.gitbooks.io/route-coc/content/)
+
+### Examples 例子
 
 ```
-[
-  "pageInfo",
-  "matchRouter",
-  "initHttpRequest",
-  "requestProxy",
-  "handleInterceptor",
-  "handleRouter",
-  "runTask",
-  "getViewPath",
-  "render"
-]
+$ git clone https://github.com/tofishes/route-coc.git
+$ cd route-coc/example
 ```
 
-通过before, after方法可以往以上默认流程加入自定义的一些处理流程。
+### License
+
+MIT
