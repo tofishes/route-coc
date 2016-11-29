@@ -1,6 +1,6 @@
 {
   "name": "route-coc",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "config route",
   "main": "index.js",
   "scripts": {
