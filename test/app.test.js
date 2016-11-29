@@ -194,6 +194,18 @@ describe('Interceptors', () => {
       .end(done);
   });
 
+  it('should not intercept xhr', done => {
+    request(app)
+      .get('/test/intercept/series/comments')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect(res => {
+        if (res.text !== 'false') {
+          throw new Error('donot intercept xhr fail');
+        }
+      })
+      .end(done);
+  });
+
   it('should interceptor response', done => {
     request(app)
       .get('/intercept/has/redirect/this-is-not-excute')
