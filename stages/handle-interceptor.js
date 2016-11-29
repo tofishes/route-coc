@@ -20,6 +20,10 @@ function match(pathname, interceptors) {
   });
 }
 function handleInterceptor(req, res, next) {
+  if (req.xhr && !this.get('interceptXhr')) {
+    return next();
+  }
+
   const pathname = req.pathname;
   const interceptors = match(pathname, this.get('interceptors'));
 
