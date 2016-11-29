@@ -26,10 +26,14 @@ function render(req, res, next) {
       // res.locals 不具有 hasOwnProperty 方法，在swig设置locals后会报错
       const data = Object.assign(res.apiData, res.locals);
       // 手动渲染有利于domain的错误捕捉，res.render会隐藏一些问题
-      res.send(engine(filePath, data));
-    } else {
-      next();
+      return res.send(engine(filePath, data));
     }
+
+    if (req.xhr) {
+      return res.json(res.apiData);
+    }
+
+    return next();
   });
 }
 

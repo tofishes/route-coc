@@ -76,7 +76,7 @@ function handleConfig(configArg, req, res) {
   /*
    * 统一格式为： [{api, query, body}...]，转为apiTask， 过滤掉item为函数情况下返回false
    */
-  api.map(item => {
+  req.apis = api.map(item => {
     let apiItem = item;
 
     if (isString(item)) {
@@ -104,7 +104,6 @@ function handleConfig(configArg, req, res) {
       apiItem.body = excute(apiItem.body);
     }
     // 数据名
-    // TODO 通过app.set自定义处理数据名方法
     if (!apiItem.name) {
       apiItem.name = stage.get('apiDataName').call(router, apiItem.api);
     }
@@ -112,8 +111,10 @@ function handleConfig(configArg, req, res) {
     if (isFunc(apiItem.cache)) {
       apiItem.cache = excute(apiItem.cache);
     }
-    // TODO 通过app.set自定义api任务方法
-    return task.addApiTask(apiItem);
+
+    task.addApiTask(apiItem);
+
+    return apiItem;
   });
 
   req.apisTask[taskName] = task;
