@@ -127,6 +127,16 @@ describe('render view and parse query', () => {
       .get('/module/head')
       .expect(200, /include/, done);
   });
+
+  it('should return json when is xhr', done => {
+    request(app)
+      .get('/xhr/comment/list')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      // .expect(res => {
+      //   console.log(res.body, '=======+++++++')
+      // })
+      .expect(200, done);
+  });
 });
 
 describe('Interceptors', () => {

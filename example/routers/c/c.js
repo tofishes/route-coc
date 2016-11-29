@@ -29,6 +29,11 @@ module.exports = {
       }
     }
   },
+  '/xhr/comment/list': {
+    'get': {
+      'api': 'http://localhost:8080/api/comment/list'
+    }
+  },
   '/comment/list': {
     'get': {
       'api': [
