@@ -57,13 +57,19 @@ Stage.prototype.get = function get(name) {
   return this.props[name];
 };
 Stage.prototype.handle = function handle(req, res, next) {
+  const stage = this;
   const actions = this.actions;
   const originNext = next;
   const startIndex = 0;
   // 特别注意，nextStage不应改变全局变量
-  const nextStage = (error) => {
+  function nextStage(error) {
     // 已响应了客户端，则不再继续任何处理
     if (res.hasSent || res.headersSent) {
+      return;
+    }
+
+    // res.forward会产生多个流程，需打断原流程
+    if (this.pathname !== req.pathname) {
       return;
     }
 
@@ -83,10 +89,16 @@ Stage.prototype.handle = function handle(req, res, next) {
 
     req.stageIndex = stageIndex;
 
-    actions[stageIndex].call(this, req, res, nextStage);
-  };
+    invokeAction(stageIndex); // eslint-disable-line no-use-before-define
+  }
   // 提供跳过stage处理流程的功能
   nextStage.origin = originNext;
+
+  function invokeAction(stageIndex) {
+    actions[stageIndex].call(stage, req, res, nextStage.bind({
+      'pathname': req.pathname
+    }));
+  }
 
   // 添加扩展属性
   // 增加一个pathname自定义属性，用于取代req.path
@@ -107,10 +119,10 @@ Stage.prototype.handle = function handle(req, res, next) {
     res.forwardSent = true;
     req.pathname = pathname;
     req.stageIndex = 0;
-    actions[req.stageIndex].call(this, req, res, nextStage);
+    invokeAction(req.stageIndex);
   };
 
-  actions[startIndex].call(this, req, res, nextStage);
+  invokeAction(startIndex);
 };
 
 module.exports = Stage;
