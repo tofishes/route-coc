@@ -80,6 +80,7 @@ class Task {
     const handleAPI = req.stage.get('handleAPI');
     url = handleAPI(url, req);
 
+    apiConfig.fullAPI = url;
     apiConfig.method = method;
 
     function action(callback) {
