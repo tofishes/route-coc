@@ -24,5 +24,29 @@ module.exports = {
     'get': {
       'api': '/api/error/task'
     }
-  }
+  },
+  '/forward/and/render': {
+    'get': {
+      'api': 'http://localhost:8080/api/comment/list',
+      'name': 'comments',
+      handle(data, req, res) {
+        res.forward(`${req.path}/handler`);
+      }
+    }
+  },
+  '/forward/and/render/handler': {
+    'get': {
+      'api': 'http://www.baidu.com/',
+      'name': 'baidu',
+      handle(data, req, res) {
+        console.log(data.comments, res.apiInfo, '--=-=-=-=-=');
+        const comments = data.comments;
+        const list = data.getList('list.data.list');
+
+        this.view = 'forward-and-render-handler';
+
+        return { list, comments };
+      }
+    }
+  },
 };
