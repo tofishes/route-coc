@@ -1,4 +1,4 @@
-const browserInfo = require('../utils/browser');
+const parser = require('ua-parser-js');
 const slash = '/';
 /**
  * 页面变量初始化等
@@ -12,10 +12,10 @@ module.exports = function pageInfo(req, res, next) {
   const firstSlash = pathname.indexOf(slash);
 
   const moduleName = pathname.substr(0, firstSlash);
-  const browser = browserInfo(req.get('User-Agent'));
+  const ua = parser(req.get('User-Agent'));
 
   Object.assign(req, {
-    browser,
+    ua,
     moduleName
   });
 
