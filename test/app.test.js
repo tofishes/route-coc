@@ -255,3 +255,17 @@ describe('Task run', () => {
       .expect(500, /Invalid URI/, done);
   });
 });
+
+describe('PageInfo Locals', () => {
+  const chrome = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
+
+  it('should get broswer chrome info', done => {
+    request(app)
+      .get('/browser')
+      .set('User-Agent', chrome)
+      .expect(res => {
+        console.log(res.text, '----');
+      })
+      .expect(200, /chrome/i, done);
+  });
+});

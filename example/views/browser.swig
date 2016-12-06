@@ -1,0 +1,3 @@
+{{
+  request.ua | json | safe
+}}
