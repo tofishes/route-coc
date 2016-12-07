@@ -39,3 +39,5 @@ temp
 .DS_Store
 desktop.ini
 *.dev.js
+
+.vscode
