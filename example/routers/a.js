@@ -36,10 +36,8 @@ module.exports = {
   },
   '/forward/and/render/handler': {
     'get': {
-      'api': 'http://www.baidu.com/',
-      'name': 'baidu',
-      handle(data, req, res) {
-        console.log(data.comments, res.apiInfo, '--=-=-=-=-=');
+      'api': 'http://localhost:8080/api/comment/list',
+      handle(data) {
         const comments = data.comments;
         const list = data.getList('list.data.list');
 
