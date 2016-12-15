@@ -15,8 +15,8 @@ function render(req, res, next) {
     return next();
   }
 
-  return fs.exists(filePath, exists => {
-    if (exists) {
+  return fs.access(filePath, fs.constants.R_OK, error => {
+    if (!error) {
       const engine = app.engines[res.viewExt];
 
       if (!engine) {
