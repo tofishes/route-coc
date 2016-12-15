@@ -104,12 +104,7 @@ describe('render view and parse query', () => {
   it('should auto render', done => {
     request(app)
       .get('/auto-render')
-      .expect(res => {
-        if (res.text !== 'auto-render') {
-          throw new Error('handle body param error');
-        }
-      })
-      .end(done);
+      .expect(200, /auto-render/, done);
   });
 
   it('should 404 when visit not exist file view', done => {
