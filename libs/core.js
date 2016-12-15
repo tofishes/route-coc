@@ -1,9 +1,10 @@
 const glob = require('glob');
-const swig = require('swig');
+const nunjucks = require('nunjucks-route-coc');
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+const env = require('../utils/env');
 const memoryCache = require('../utils/memory-cache');
 const parseMultiName = require('../utils/parse-multi-name');
 const parseRouter = require('./parse-router');
@@ -88,7 +89,6 @@ module.exports = (app, args = {}) => {
   const stage = new Stage(stages);
 
   stage.set('app', app);
-  stage.set('swig', swig);
   // 存储
   stage.set('interceptorMap', interceptorMap);
   stage.set('interceptors', interceptors);
@@ -104,14 +104,19 @@ module.exports = (app, args = {}) => {
   // 保存接口地址处理方法
   stage.set('handleAPI', handleAPI);
 
-  // 添加swig模板引擎
-  swig.setDefaults({
-    loader: swig.loaders.fs(viewDir)
+  // 添加默认模板引擎
+  const nunjucksEnv = nunjucks.configure(viewDir, {
+    autoescape: true,
+    noCache: env.isDev,
+    watch: env.isDev
   });
-  app.engine('swig', swig.renderFile);
+  stage.set('nunjucks', nunjucks);
+  stage.set('nunjucksEnv', nunjucksEnv);
+
+  app.engine('njk', nunjucks.render);
   // 设置引擎默认后缀
   if (!app.get('view engine')) {
-    app.set('view engine', 'swig');
+    app.set('view engine', 'njk');
   }
 
   app.use(mount, (req, res, next) => {
