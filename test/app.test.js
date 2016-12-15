@@ -48,6 +48,12 @@ describe('App server request', () => {
       .expect(500, /foward path cannot be the same as req.path/, done);
   });
 
+  it('should handled by middleware when render error ', done => {
+    request(app)
+      .get('/render-error')
+      .expect(500, done);
+  });
+
   // filters
   it('should forward to baidu after requestProxy', done => {
     request(app)
@@ -258,9 +264,6 @@ describe('PageInfo Locals', () => {
     request(app)
       .get('/browser')
       .set('User-Agent', chrome)
-      .expect(res => {
-        console.log(res.text, '----');
-      })
       .expect(200, /chrome/i, done);
   });
 });

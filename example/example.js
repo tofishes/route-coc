@@ -63,7 +63,9 @@ app.use((req, res) => {
   res.status(404).send('404 not found!');
 });
 
-app.use((error, req, res, next) => res.status(500).send(`<pre>${error.stack}</pre>`));
+app.use((error, req, res, next) => { // eslint-disable-line
+  res.status(500).send(`<pre>${error.stack}</pre>`);
+});
 
 app.listen(8080, () => {
   const startInfo = 'server run at http://localhost:8080';
