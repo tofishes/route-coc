@@ -23,10 +23,16 @@ function render(req, res, next) {
         throw new Error(`.${res.viewExt} file type has no template engine`);
       }
 
-      // res.locals 不具有 hasOwnProperty 方法，在swig设置locals后会报错
       const data = Object.assign(res.apiData, res.locals);
-      // 手动渲染有利于domain的错误捕捉，res.render会隐藏一些问题
-      return res.send(engine(filePath, data));
+
+      return engine(filePath, data, (err, html) => {
+        if (err) {
+          next(err);
+          return;
+        }
+
+        res.send(html);
+      });
     }
 
     if (req.xhr) {
