@@ -7,6 +7,13 @@ const app = express();
 
 app.engine('swig', swig.renderFile);
 
+require('marko/node-require').install();
+app.engine('marko', (filePath, data, callback) => {
+  const template = require(filePath); // eslint-disable-line
+
+  template.renderToString(data, callback);
+});
+
 const stage = coc(app, {
   interceptorDir: `${__dirname}/interceptors`,
   routerDir: `${__dirname}/routers`,
