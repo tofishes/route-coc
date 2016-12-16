@@ -59,5 +59,10 @@ module.exports = {
         }
       };
     }
+  },
+  '/render-index-view': {
+    'get': {
+      'view': 'render-index'
+    }
   }
 };

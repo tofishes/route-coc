@@ -113,6 +113,18 @@ describe('render view and parse query', () => {
       .expect(200, /auto-render/, done);
   });
 
+  it('should render default index page when visit dir path', done => {
+    request(app)
+      .get('/render-index')
+      .expect(200, /index file/, done);
+  });
+
+  it('should render default index page when visit dir view', done => {
+    request(app)
+      .get('/render-index-view')
+      .expect(200, /index file/, done);
+  });
+
   it('should 404 when visit not exist file view', done => {
     request(app)
       .get('/not/exist/view')
