@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const typeOf = require('../utils/typeof');
 
 function getViewPath(req, res, next) {
@@ -29,13 +30,33 @@ function getViewPath(req, res, next) {
     view += ext;
   }
 
-  const filePath = path.join(this.get('views'), view);
-
   res.viewPath = view;
   res.viewExt = ext;
-  res.viewFile = filePath;
 
-  return next();
+  const filePath = path.join(this.get('views'), view);
+
+  const success = viewFile => {
+    res.viewFile = viewFile;
+
+    return next();
+  };
+
+  fs.access(filePath, (err) => {
+    if (!err) {
+      return success(filePath);
+    }
+
+    const indexFile = filePath.replace(ext, `/index${ext}`);
+
+    return fs.access(indexFile, (error) => {
+      if (!error) {
+        success(indexFile);
+        return;
+      }
+
+      next();
+    });
+  });
 }
 
 module.exports = getViewPath;
