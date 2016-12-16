@@ -27,9 +27,9 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "glob": "^7.1.1",
+    "nunjucks-route-coc": "^1.0.0",
     "path-to-regexp": "^1.5.3",
     "request": "^2.72.0",
-    "swig": "^1.4.2",
     "t-log": "^1.0.0",
     "ua-parser-js": "^0.7.12",
     "value-chain": "^1.0.0"
@@ -38,6 +38,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
     "should": "^11.1.1",
-    "supertest": "^2.0.1"
+    "supertest": "^2.0.1",
+    "swig": "^1.4.2"
   }
 }
