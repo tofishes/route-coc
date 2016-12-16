@@ -64,5 +64,10 @@ module.exports = {
     'get': {
       'view': 'render-index'
     }
+  },
+  '/render-with-swig': {
+    'get': {
+      'view': 'other-engine.swig'
+    }
   }
 };

@@ -1,8 +1,11 @@
 const log = require('t-log');
 const express = require('express');
+const swig = require('swig');
 const coc = require('../index');
 
 const app = express();
+
+app.engine('swig', swig.renderFile);
 
 const stage = coc(app, {
   interceptorDir: `${__dirname}/interceptors`,

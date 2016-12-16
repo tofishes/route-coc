@@ -125,6 +125,17 @@ describe('render view and parse query', () => {
       .expect(200, /index file/, done);
   });
 
+  it('should auto render swig file by swig engine', done => {
+    request(app)
+      .get('/other-engine.swig')
+      .expect(200, /use swig engine/, done);
+  });
+  it('should render swig view by swig engine', done => {
+    request(app)
+      .get('/render-with-swig')
+      .expect(200, /use swig engine/, done);
+  });
+
   it('should 404 when visit not exist file view', done => {
     request(app)
       .get('/not/exist/view')
