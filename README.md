@@ -20,7 +20,7 @@ route-coc已经规定好 拦截器-路由-页面渲染 这样的一个流程，�
 * Filters 过滤器
 * Interceptors 拦截器
 * res.forward 服务器内跳转
-* default template engine 默认使用swig模板引擎
+* default template engine 默认使用nunjucks模板引擎
 
 ### Quick Start 开始使用
  ```
