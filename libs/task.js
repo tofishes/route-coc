@@ -143,7 +143,7 @@ class Task {
         }
 
         if (apiConfig.handle) {
-          result = apiConfig.handle.call(req.router, result, req, res);
+          result = apiConfig.handle.call(req.router, valueChain.set(result), req, res);
         }
 
         res.apiData[dataName] = valueChain.set(result);
