@@ -2,6 +2,7 @@ const log = require('t-log');
 const express = require('express');
 const swig = require('swig');
 const coc = require('../index');
+const apiMap = require('./api-map');
 
 const app = express();
 
@@ -17,7 +18,12 @@ app.engine('marko', (filePath, data, callback) => {
 const stage = coc(app, {
   interceptorDir: `${__dirname}/interceptors`,
   routerDir: `${__dirname}/routers`,
-  viewDir: `${__dirname}/views`
+  viewDir: `${__dirname}/views`,
+  handleAPI(apiUrl) {
+    const apiDomain = apiMap[apiUrl] || '';
+
+    return apiDomain + apiUrl;
+  }
 });
 
 // 查看阶段列表，每个阶段都可以用before,after处理
