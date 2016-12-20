@@ -29,6 +29,12 @@ module.exports = {
       }
     }
   },
+  '/proxy/api/comment/list': {
+    'get': {
+      'api': '/api/comment/list',
+      'proxy': true
+    }
+  },
   '/xhr/comment/list': {
     'get': {
       'api': 'http://localhost:8080/api/comment/list'
@@ -38,7 +44,7 @@ module.exports = {
     'get': {
       'api': [
         {
-          'api': 'get:http://localhost:8080/api/comment/list',
+          'api': 'get:/api/comment/list',
           'name': 'comments',
           'cache': true,
           query() {

@@ -30,4 +30,9 @@ describe('util browser useragent', () => {
     const profile = browser(chrome);
     profile.webkit.should.be.exactly(true);
   });
+
+  it('should be empty when ua is empty', () => {
+    const profile = browser('');
+    profile.should.be.empty();
+  });
 });

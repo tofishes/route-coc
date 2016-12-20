@@ -54,6 +54,12 @@ describe('App server request', () => {
       .expect(500, done);
   });
 
+  it('should forward ok', done => {
+    request(app)
+      .get('/forward/and/render')
+      .expect(200, /list/, done);
+  });
+
   // filters
   it('should forward to baidu after requestProxy', done => {
     request(app)
@@ -159,7 +165,13 @@ describe('render view and parse query', () => {
       // .expect(res => {
       //   console.log(res.body, '=======+++++++')
       // })
-      .expect(200, done);
+      .expect(200, /鞋子非常好，质量棒棒哒/, done);
+  });
+
+  it('should return json when is proxy', done => {
+    request(app)
+      .get('/proxy/api/comment/list')
+      .expect(200, /鞋子非常好，质量棒棒哒/, done);
   });
 });
 
