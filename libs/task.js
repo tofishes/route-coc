@@ -1,6 +1,7 @@
 const async = require('async');
 const log = require('t-log');
 const env = require('../utils/env');
+const parseURLMethod = require('../utils/parse-url-method');
 const valueChain = require('value-chain');
 
 class Task {
@@ -53,7 +54,6 @@ class Task {
   // api类型任务
   addApiTask(apiConfig) {
     const { req, res } = this.props.context;
-    const methodMark = ':';
     const request = req.httpRequest();
 
     const qs = apiConfig.query;
@@ -61,27 +61,14 @@ class Task {
     const dataName = apiConfig.name;
     const cache = apiConfig.cache;
 
-    let method = req.method.toLowerCase();
-    let url = apiConfig.api;
-
-    // 提取api中配置的方法
-    // 例如 api: 'post:/api/adress'
-    const markIndex = url.indexOf(methodMark);
-
-    if (~markIndex) {
-      const prefix = url.substr(0, markIndex);
-      // 是支持的方法
-      if (~request.methods.indexOf(prefix)) {
-        method = prefix;
-        url = url.substr(markIndex + 1);
-      }
-    }
+    const urlMethod = parseURLMethod(apiConfig.api, req.method);
+    let url = urlMethod.url;
 
     const handleAPI = req.stage.get('handleAPI');
     url = handleAPI(url, req);
 
     apiConfig.fullAPI = url;
-    apiConfig.method = method;
+    apiConfig.method = urlMethod.method;
 
     function action(callback) {
       const timer = log.time();
@@ -151,7 +138,7 @@ class Task {
         return callback(error, result);
       };
 
-      request[method]({
+      request[apiConfig.method]({
         body,
         qs,
         url

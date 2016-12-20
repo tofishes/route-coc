@@ -8,8 +8,9 @@
  * @param  {[type]} res    [description]
  * @return {[type]}        [description]
  */
+const parseURLMethod = require('../utils/parse-url-method');
+
 function requestProxy(req, res, next) {
-  const handleAPI = this.get('handleAPI');
   const router = req.router;
   const xhrProxy = !router && req.xhr;
   const routeProxy = router && router.proxy;
@@ -21,12 +22,18 @@ function requestProxy(req, res, next) {
   }
 
   let url = req.path;
-  if (routeProxy) {
-    url = handleAPI(router.api, req);
+  let method = req.method.toLowerCase();
+
+  if (routeProxy && router.api) {
+    const urlMethod = parseURLMethod(router.api, method);
+
+    url = urlMethod.url;
+    method = urlMethod.method;
   }
 
+  url = this.get('handleAPI')(url, req);
+
   const request = req.httpRequest();
-  const method = req.method.toLowerCase();
   const options = {
     url,
     'qs': req.query,

@@ -1,6 +1,6 @@
 const request = require('../utils/request');
 const valueChain = require('value-chain');
-const methods = ['get', 'post', 'put', 'delete'];
+const methods = require('../utils/parse-url-method').methods;
 
 function getRequest() {
   const req = this;
