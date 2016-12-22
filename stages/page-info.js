@@ -20,7 +20,6 @@ module.exports = function pageInfo(req, res, next) {
   });
 
   res.locals.request = req;
-  res.locals.app = req.app;
 
   next();
 };
