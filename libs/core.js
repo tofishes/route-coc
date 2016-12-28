@@ -66,8 +66,9 @@ module.exports = (app, args = {}) => {
     stages = defaultStages,                 // 默认stage列表
     mount = '/',                            // 程序挂载路径，默认为根路径，类型符合express path examples
     apiDataCache = memoryCache,             // 接口数据缓存方法，默认存储于内存中
-    apiDataName = simpleApiDataName,                            // 接口数据名方法，默认为获取api地址最后一个/后面的单词名
-    handleAPI = url => url                  // router.api地址预处理方法，默认返回自身
+    apiDataName = simpleApiDataName,        // 接口数据名方法，默认为获取api地址最后一个/后面的单词名
+    handleAPI = url => url,                 // router.api地址预处理方法，默认返回自身
+    ajaxCache = true                        // 是否允许缓存ajax响应结果，默认允许缓存
   } = args;
 
   const interceptorMap = loadRoutes(interceptorDir);
@@ -103,6 +104,8 @@ module.exports = (app, args = {}) => {
   stage.set('apiDataName', apiDataName);
   // 保存接口地址处理方法
   stage.set('handleAPI', handleAPI);
+
+  stage.set('ajaxCache', ajaxCache);
 
   // 添加默认模板引擎
   const nunjucksEnv = nunjucks.configure(viewDir, {
