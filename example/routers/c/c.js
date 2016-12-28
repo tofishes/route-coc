@@ -62,6 +62,7 @@ module.exports = {
         }
       ],
       'timeout': 1000,
+      'pageCache': false,
       handle(data) {
         this.view = 'comments';
         return data;
