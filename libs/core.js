@@ -89,7 +89,6 @@ module.exports = (app, args = {}) => {
 
   const stage = new Stage(stages);
 
-  stage.set('app', app);
   // 存储
   stage.set('interceptorMap', interceptorMap);
   stage.set('interceptors', interceptors);
