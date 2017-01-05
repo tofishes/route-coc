@@ -301,4 +301,17 @@ describe('PageInfo Locals', () => {
       .set('User-Agent', chrome)
       .expect(200, /chrome/i, done);
   });
+
+  it('should get moduleName exactly', done => {
+    request(app)
+      .get('/module-name')
+      .expect(200, /module-name/, done);
+  });
+
+  it('should get moduleName and pathes exactly', done => {
+    request(app)
+      .get('/module/url-info')
+      .expect(200, /pathes: module,url-info/)
+      .expect(200, /moduleName: module,/, done);
+  });
 });

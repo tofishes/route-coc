@@ -47,4 +47,9 @@ module.exports = {
       }
     }
   },
+  '/module-name': {
+    'get': {
+      'view': 'module/url-info.njk'
+    }
+  }
 };
