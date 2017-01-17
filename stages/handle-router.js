@@ -50,8 +50,8 @@ function handleConfig(configArg, req, res) {
   }
 
   // 统一格式
-  const query = req.query;
-  const body = req.body;
+  const query = config.query || req.query;
+  const body = config.body || req.body;
   const name = config.name;
   const cache = config.cache;
   const excute = func => func.call(config, req, res);
@@ -97,11 +97,11 @@ function handleConfig(configArg, req, res) {
     apiItem = Object.assign({ query, body, name, cache }, apiItem);
 
     // 参数处理
-    if (config.query) {
-      apiItem.query = excute(config.query);
+    if (isFunc(apiItem.query)) {
+      apiItem.query = excute(apiItem.query);
     }
-    if (config.body) {
-      apiItem.body = excute(config.body);
+    if (isFunc(apiItem.body)) {
+      apiItem.body = excute(apiItem.body);
     }
     // 数据名
     if (!apiItem.name) {
