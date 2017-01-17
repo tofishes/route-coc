@@ -80,7 +80,10 @@ class Task {
         let result = getCache.call(req.router, url);
 
         if (result) {
-          res.apiInfo[dataName].consumeTime = timer.end();
+          const consumeTime = timer.end();
+          const resBody = result;
+          const headers = { from: 'cache' };
+          Object.assign(res.apiInfo[dataName], { consumeTime, headers, resBody });
 
           if (apiConfig.handle) {
             result = apiConfig.handle.call(req.router, result, req, res);
