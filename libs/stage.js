@@ -103,7 +103,7 @@ Stage.prototype.handle = function handle(req, res, next) {
   // 添加扩展属性
   // 增加一个pathname自定义属性，用于取代req.path
   // pathname可实现forward功能
-  req.pathname = req.path;
+  req.pathname = req.path.replace(/\/+/g, '/'); // 纠正多个/的问题
   req.stageIndex = startIndex;
   req.stage = res.stage = this;
 
