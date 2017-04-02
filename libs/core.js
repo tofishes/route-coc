@@ -1,5 +1,5 @@
 const glob = require('glob');
-const nunjucks = require('nunjucks-route-coc');
+const nunjucks = require('nunjucks');
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
