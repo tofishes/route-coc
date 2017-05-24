@@ -53,8 +53,8 @@ function simpleApiDataName(api) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, matchRouter, initHttpRequest, requestProxy,
-    handleInterceptor, handleRouter, runTask, getViewPath, render
+    pageInfo, initHttpRequest, handleInterceptor, matchRouter,
+    requestProxy, handleRouter, runTask, getViewPath, render
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
