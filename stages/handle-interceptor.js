@@ -33,6 +33,22 @@ function handleInterceptor(req, res, next) {
 
   req.interceptors = interceptors.map(interceptor => handleConfig(interceptor, req, res));
 
+  const seriesTask = req.apisTask.series;
+
+  if (seriesTask) {
+    return seriesTask.error(error => {
+      next(error);
+    }).run(() => {
+      if (res.forwardSent || res.hasSent || res.headersSent) {
+        return;
+      }
+
+      req.apisTask.series = null;
+
+      next();
+    });
+  }
+
   return next();
 }
 
