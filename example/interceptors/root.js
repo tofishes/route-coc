@@ -48,5 +48,10 @@ module.exports = {
     handle(data, req, res) {
       res.forward('/hello');
     }
+  },
+  '/intercept/series/api-func-get-data': {
+    api: 'http://localhost:8080/api/comment/list',
+    name: 'interceptorData',
+    series: true
   }
 };

@@ -253,6 +253,17 @@ describe('Interceptors', () => {
       .get('/intercept/has/forward/this-is-not-excute')
       .expect(200, /hello world/, done);
   });
+
+  it('should can get data in router api-function from intercept api when set intercept series = true', done => {
+    request(app)
+      .get('/intercept/series/api-func-get-data')
+      .expect(res => {
+        if (res.text !== 'two') {
+          throw new Error('router function api config fail to get apiData from interceptor');
+        }
+      })
+      .end(done);
+  });
 });
 
 describe('Config is function', () => {
