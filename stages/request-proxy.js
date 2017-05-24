@@ -24,6 +24,8 @@ function requestProxy(req, res, next) {
   let url = req.path;
   let method = req.method.toLowerCase();
 
+  // 如果是get请求，为什么不用redirect跳转
+  // 避免redirect url不支持对外访问
   if (routeProxy && router.api) {
     const urlMethod = parseURLMethod(router.api, method);
 
