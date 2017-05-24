@@ -15,6 +15,11 @@ function render(req, res, next) {
   const app = req.app;
   const filePath = res.viewFile;
 
+  /**
+   * html渲染和ajax json渲染
+   * 之所以html渲染放在前面，是允许配置了view的情况下，可以由ajax获取html结果
+   * 若想ajax始终得到json，不要配置view
+   */
   if (filePath) {
     const excludes = this.get('viewExclude')
       .filter(exclude => minimatch(filePath, exclude));
@@ -33,6 +38,8 @@ function render(req, res, next) {
     }
 
     const data = Object.assign(res.apiData, res.locals);
+
+    data.apiDataKeys = Object.keys(data);
 
     return engine(filePath, data, (err, html) => {
       if (err) {
