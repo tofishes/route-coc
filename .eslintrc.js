@@ -12,10 +12,12 @@ module.exports = {
             "experimentalObjectRestSpread": true,
             "jsx": true
         },
-        "sourceType": "script"
+        "ecmaVersion": 2017,
+        "sourceType": "module"
     },
     "plugins": [
-        "react"
+        // "react",
+        // "vue"
     ],
     "globals": {
         "$": true,
