@@ -51,7 +51,7 @@ function matchRouter(req, res, next) {
   const supportRouter = router[method];
 
   if (!supportRouter) {
-    return res.status(405).send(`405 ${method.toUpperCase()} Method Not Allowed`);
+    return next(new Error(`405 ${method.toUpperCase()} Method Not Allowed`));
   }
 
   req.router = supportRouter;

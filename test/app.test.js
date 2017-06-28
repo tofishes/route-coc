@@ -74,10 +74,10 @@ describe('App server request', () => {
 });
 
 describe('render view and parse query', () => {
-  it('should 405 method not allowed', done => {
+  it('should throw error 405 method not allowed', done => {
     request(app)
       .get('/post')
-      .expect(405, done);
+      .expect(500, done);
   });
 
   it('should render hello username', done => {
