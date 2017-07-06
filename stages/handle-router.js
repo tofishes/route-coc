@@ -14,12 +14,12 @@ function handleConfig(configArg, req, res) {
   let config = configArg;
   let router = configArg;
 
-  if (!config) {
-    return router;
-  }
-
   if (isFunc(config)) {
     config = router = config(req, res);
+  }
+
+  if (!config) {
+    return router;
   }
 
   let api = config.api;
