@@ -2,6 +2,16 @@ const request = require('../utils/request');
 const valueChain = require('value-chain');
 const methods = require('../utils/parse-url-method').methods;
 
+function disableCache(disabled) {
+  if (!disabled) {
+    return;
+  }
+
+  const res = this;
+
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+}
+
 function getRequest() {
   const req = this;
   const config = req.httpRequestConfig || {};
@@ -25,6 +35,13 @@ module.exports = function initHttpRequest(req, res, next) {
   req.apisTask = {};
 
   valueChain.set(res.apiData);
+
+  res.disableCache = disableCache.bind(res);
+
+  if (req.xhr) {
+    const disableAjaxCache = this.get('ajaxCache') === false;
+    res.disableCache(disableAjaxCache);
+  }
 
   next();
 };
