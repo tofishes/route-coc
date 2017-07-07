@@ -38,7 +38,7 @@ function render(req, res, next) {
       }
 
       const disablePageCache = req.router && req.router.pageCache === false;
-      res.disableCache(res, disablePageCache);
+      res.disableCache(disablePageCache);
 
       res.send(html);
     });

@@ -38,10 +38,8 @@ module.exports = function initHttpRequest(req, res, next) {
 
   res.disableCache = disableCache.bind(res);
 
-  if (req.xhr) {
-    const disableAjaxCache = this.get('ajaxCache') === false;
-    res.disableCache(disableAjaxCache);
-  }
+  const disableAjaxCache = req.xhr && this.get('ajaxCache') === false;
+  res.disableCache(disableAjaxCache);
 
   next();
 };
