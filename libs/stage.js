@@ -96,7 +96,7 @@ Stage.prototype.handle = function handle(req, res, next) {
 
   function invokeAction(stageIndex) {
     actions[stageIndex].call(stage, req, res, nextStage.bind({
-      'pathname': req.pathname
+      'pathname': req.pathname, stageIndex
     }));
   }
 
@@ -105,7 +105,7 @@ Stage.prototype.handle = function handle(req, res, next) {
   // pathname可实现forward功能
   req.pathname = req.path.replace(/\/+/g, '/'); // 纠正多个/的问题
   req.stageIndex = startIndex;
-  req.stage = res.stage = this;
+  req.stage = res.stage = stage;
 
   res.apiData = {};
   res.apiInfo = {};
@@ -119,7 +119,12 @@ Stage.prototype.handle = function handle(req, res, next) {
     res.forwardSent = true;
     req.pathname = pathname;
     req.stageIndex = 0;
-    invokeAction(req.stageIndex);
+    // 让转发前的流程先执行并在下一个next时终止
+    // 然后继续转发后的流程
+    // 这样可以避免两个流程的变量污染
+    process.nextTick(() => {
+      invokeAction(req.stageIndex);
+    });
   };
 
   invokeAction(startIndex);
