@@ -115,7 +115,7 @@ class Task {
             message = `API ${url} Request Timeout.`;
           }
 
-          result = { code, message, resBody };
+          result = { code, message, resBody, error };
         } else {
           if (!response || response.statusCode !== 200) {
             willCache = false;
