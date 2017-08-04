@@ -11,14 +11,15 @@ const parseRouter = require('./parse-router');
 const Stage = require('./stage');
 
 const pageInfo = require('../stages/page-info');
+const initHttpRequest = require('../stages/init-http-request');
 const matchRouter = require('../stages/match-router');
-const requestProxy = require('../stages/request-proxy');
 const handleInterceptor = require('../stages/handle-interceptor');
 const handleRouter = require('../stages/handle-router');
+const requestProxy = require('../stages/request-proxy');
 const runTask = require('../stages/run-task');
 const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
-const initHttpRequest = require('../stages/init-http-request');
+const response = require('../stages/response');
 
 const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
@@ -54,7 +55,7 @@ function simpleApiDataName(api) {
 module.exports = (app, args = {}) => {
   const defaultStages = [
     pageInfo, initHttpRequest, matchRouter, handleInterceptor,
-    handleRouter, requestProxy, runTask, getViewPath, render
+    handleRouter, requestProxy, runTask, getViewPath, render, response
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
