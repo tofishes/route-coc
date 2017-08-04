@@ -42,12 +42,11 @@ function requestProxy(req, res, next) {
     'body': req.body
   };
 
-  request[method](options).on('response', response => {
+  res.proxyResoponse = request[method](options).on('response', response => {
     res.set(response.headers);
-  })
-  .pipe(res);
+  });
 
-  res.hasSent = true;
+  next.to('response');
 }
 
 module.exports = requestProxy;
