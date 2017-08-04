@@ -266,6 +266,20 @@ describe('Interceptors', () => {
   });
 });
 
+describe('Routers test', () => {
+  it('should match the fixed router', done => {
+    request(app)
+      .get('/conflicted/literals')
+      .expect(200, /fixed literals/, done);
+  });
+
+  it('should match the dynamic router', done => {
+    request(app)
+      .get('/conflicted/tofishes')
+      .expect(200, /dynamic tofishes/, done);
+  });
+});
+
 describe('Config is function', () => {
   it('should be ok when api is Array', done => {
     request(app)

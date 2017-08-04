@@ -69,5 +69,19 @@ module.exports = {
     'get': {
       'view': 'other-engine.swig'
     }
+  },
+  '/conflicted/:name': {
+    'get': {
+      handle(data, req, res) {
+        return res.send(`dynamic ${req.param.name}`);
+      }
+    }
+  },
+  '/conflicted/literals': {
+    'get': {
+      handle(data, req, res) {
+        return res.send('fixed literals');
+      }
+    }
   }
 };
