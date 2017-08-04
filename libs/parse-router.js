@@ -24,5 +24,7 @@ module.exports = (routerMap, each = loop) => {
     return router;
   });
 
-  return routers;
+  // 根据是否有参数来排序，让无参数的排前面优先匹配
+  // 解决类似 /news/list 和 /news/:id 这样的路由冲突
+  return routers.sort(router => router.paramKeys.length);
 };
