@@ -3,10 +3,28 @@ const Stage = require('../libs/stage');
 
 const pageInfo = require('../stages/page-info');
 const matchRouter = require('../stages/match-router');
+let nextToResult = 'to is ok';
+let noInvoKeMiddle = 'no-invoke';
+
+function a(req, res, next) {
+  req.isTo = true;
+  next.to('c');
+}
+function b(req, res, next) {
+  req.isTo = false;
+  noInvoKeMiddle = 'yes-invoke';
+  next();
+}
+function c(req, res, next) {
+  if (!req.isTo) {
+    nextToResult = 'to is bad';
+  }
+}
 
 describe('Class Stage', () => {
   const filters = [pageInfo, matchRouter];
   const stage = new Stage(filters);
+  const stage2 = new Stage([a, b, c]);
 
   function beforePageInfo() {}
   function afterPageInfo() {}
@@ -38,5 +56,12 @@ describe('Class Stage', () => {
   it('should get and set props correctly', () => {
     stage.set('a', 1);
     stage.get('a').should.equal(1);
+  });
+
+  it('should get ok when use next.to()', () => {
+    stage2.handle({ path: '/demo' }, {}, () => {});
+
+    nextToResult.should.equal('to is ok');
+    noInvoKeMiddle.should.equal('no-invoke');
   });
 });
