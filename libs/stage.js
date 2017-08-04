@@ -56,11 +56,22 @@ Stage.prototype.set = function set(name, value) {
 Stage.prototype.get = function get(name) {
   return this.props[name];
 };
-Stage.prototype.handle = function handle(req, res, next) {
+Stage.prototype.handle = function handle(req, res, originNext) {
   const stage = this;
   const actions = this.actions;
-  const originNext = next;
   const startIndex = 0;
+
+  // 执行指定名称的action
+  function to(actionName) {
+    const index = actions.findIndex(action => action.name === actionName);
+
+    if (!~index) {
+      throw new Error(`Action ${actionName} does not exist!`);
+    }
+
+    invokeAction(index);
+  }
+
   // 特别注意，nextStage不应改变全局变量
   function nextStage(error) {
     // 已响应了客户端，则不再继续任何处理
@@ -91,13 +102,16 @@ Stage.prototype.handle = function handle(req, res, next) {
 
     invokeAction(stageIndex); // eslint-disable-line no-use-before-define
   }
-  // 提供跳过stage处理流程的功能
-  nextStage.origin = originNext;
 
   function invokeAction(stageIndex) {
-    actions[stageIndex].call(stage, req, res, nextStage.bind({
+    const next = nextStage.bind({
       'pathname': req.pathname, stageIndex
-    }));
+    });
+    // 提供跳过stage处理流程的功能
+    next.origin = originNext;
+    next.to = to;
+
+    return actions[stageIndex].call(stage, req, res, next);
   }
 
   // 添加扩展属性
