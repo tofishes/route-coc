@@ -70,6 +70,8 @@ Stage.prototype.handle = function handle(req, res, originNext) {
     }
 
     invokeAction(index);
+
+    return index;
   }
 
   // 特别注意，nextStage不应改变全局变量
@@ -130,13 +132,19 @@ Stage.prototype.handle = function handle(req, res, originNext) {
       return;
     }
 
-    res.forwardSent = true;
     req.pathname = pathname;
     req.stageIndex = 0;
     // 让转发前的流程先执行并在下一个next时终止
     // 然后继续转发后的流程
     // 这样可以避免两个流程的变量污染
     process.nextTick(() => {
+      res.forwardSent = true;
+      // 允许forward到一个外域名，但必须是http或https协议开头
+      if (pathname.startsWith('http')) {
+        to('requestProxy');
+        return;
+      }
+
       invokeAction(req.stageIndex);
     });
   };
