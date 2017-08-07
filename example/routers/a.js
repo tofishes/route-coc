@@ -20,6 +20,20 @@ module.exports = {
       }
     }
   },
+  '/forward/to/baidu-in-api': {
+    'get': {
+      api(req, res) {
+        res.forward('https://www.baidu.com');
+      }
+    }
+  },
+  '/forward/to/baidu': {
+    'get': {
+      handle(data, req, res) {
+        res.forward('https://www.baidu.com');
+      }
+    }
+  },
   '/task/error': {
     'get': {
       'api': '/api/error/task'

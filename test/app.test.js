@@ -48,6 +48,18 @@ describe('App server request', () => {
       .expect(500, /foward path cannot be the same as req.path/, done);
   });
 
+  it('should forward to www.baidu.com in router.api function', done => {
+    request(app)
+      .get('/forward/to/baidu-in-api')
+      .expect(200, /百度一下，你就知道/, done);
+  });
+
+  it('should forward to www.baidu.com in router.handle config', done => {
+    request(app)
+      .get('/forward/to/baidu')
+      .expect(200, /百度一下，你就知道/, done);
+  });
+
   it('should handled by middleware when render error ', done => {
     request(app)
       .get('/render-error')

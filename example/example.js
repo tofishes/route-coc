@@ -15,6 +15,10 @@ app.engine('marko', (filePath, data, callback) => {
   template.renderToString(data, callback);
 });
 
+app.use('/favicon.ico', (req, res) => {
+  return res.send('ok');
+});
+
 const stage = coc(app, {
   interceptorDir: `${__dirname}/interceptors`,
   routerDir: `${__dirname}/routers`,
@@ -29,11 +33,11 @@ const stage = coc(app, {
 // 查看阶段列表，每个阶段都可以用before,after处理
 log.info(stage.stageNames);
 
-stage.before('pageInfo', (req, res, next) => {
+stage.before('pageInfo', function beforePageInfo(req, res, next) {
   req.reqCircle = log.time();
   next();
 });
-stage.before('initHttpRequest', (req, res, next) => {
+stage.before('initHttpRequest', function beforeInitHttpRequest(req, res, next) {
   let timeout = 5 * 1000;
 
   if (req.router && req.router.timeout) {
@@ -45,7 +49,7 @@ stage.before('initHttpRequest', (req, res, next) => {
 });
 
 // forward has been test
-stage.after('requestProxy', (req, res, next) => {
+stage.after('requestProxy', function afterRequestProxy(req, res, next) {
   const pathname = req.pathname;
   log.debug('param:', req.param);
   log.debug('path:', pathname);
@@ -63,8 +67,10 @@ stage.after('requestProxy', (req, res, next) => {
 
   next();
 });
-stage.before('render', (req, res, next) => {
+stage.before('response', function beforeResponse(req, res, next) {
   const apiInfo = res.apiInfo;
+
+  log.debug(apiInfo, '-----')
 
   Object.keys(apiInfo).map(name => {
     const info = apiInfo[name];
