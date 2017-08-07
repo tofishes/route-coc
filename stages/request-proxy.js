@@ -8,6 +8,7 @@
  * @param  {[type]} res    [description]
  * @return {[type]}        [description]
  */
+const log = require('t-log');
 const parseURLMethod = require('../utils/parse-url-method');
 
 function requestProxy(req, res, next) {
@@ -15,16 +16,18 @@ function requestProxy(req, res, next) {
   const xhrProxy = !router && req.xhr;
   const routeProxy = router && router.proxy;
 
+  let url = req.pathname; // pathname 支持forward代理
+  const isDomainProxy = url.startsWith('http') && res.forwardSent;
+
   // 既不是ajax，又不是代理
-  if (!routeProxy && !xhrProxy) {
+  if (!routeProxy && !xhrProxy && !isDomainProxy) {
     next();
     return;
   }
 
-  let url = req.path;
   let method = req.method.toLowerCase();
 
-  // 如果是get请求，为什么不用redirect跳转
+  // 如果是get请求，为什么不用redirect跳转:
   // 避免redirect url不支持对外访问
   if (routeProxy && router.api) {
     const urlMethod = parseURLMethod(router.api, method);
@@ -42,8 +45,20 @@ function requestProxy(req, res, next) {
     'body': req.body
   };
 
+  // 记录apiInfo数据
+  res.apiInfo.proxy = {
+    api: req.pathname,
+    query: req.query,
+    body: req.body
+  }
+
+  const timer = log.time();
+
   res.proxyResoponse = request[method](options).on('response', response => {
     res.set(response.headers);
+
+    res.apiInfo.proxy.headers = response.headers;
+    res.apiInfo.proxy.consumeTime = timer.end();
   });
 
   next.to('response');
