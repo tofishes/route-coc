@@ -59,9 +59,10 @@ function requestProxy(req, res, next) {
 
     res.apiInfo.proxy.headers = response.headers;
     res.apiInfo.proxy.consumeTime = timer.end();
+    // 回调中跳转，性能一样，都会等待代理响应后才发起客户端响应
+    next.to('beforeResponse');
   });
 
-  next.to('response');
 }
 
 module.exports = requestProxy;
