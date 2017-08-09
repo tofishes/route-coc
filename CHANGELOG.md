@@ -2,7 +2,7 @@
 
   ### Changed
 
-  * 路由无 :param 的优先匹配，可同时配置 /route/b 和 /route/:id，而不会产生冲突
+  * 路由无 :param 的优先匹配，可同时配置 /news/publih 和 /news/:id，而不会产生冲突
   * res.forward 能够转到任何外域名网址(http://或https://开头的完整地址)
   * 其他一些内部逻辑调整
 
