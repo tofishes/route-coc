@@ -4,10 +4,10 @@
 
   * 路由无 :param 的优先匹配，可同时配置 /route/b 和 /route/:id，而不会产生冲突
   * res.forward 能够转到任何外域名网址(http://或https://开头的完整地址)
+  * 其他一些内部逻辑调整
 
   ### Added
-  * 增加response stage做最后响应阶段，原来的 request-proxy 和 render 不做最终响应
-  * next.to('stage name') 直接跳到某个阶段 ? 少了next一些判断
+  * 增加response stage做最后响应阶段，原来的 requestProxy 和 render 不做最终响应
   * res.html 保存渲染模板后的html
   * requestProxy 记录一些apiInfo数据
 
