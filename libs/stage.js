@@ -28,6 +28,9 @@ function Stage(stages) {
       throw new Error(`Stage ${name} does not exist`);
     }
 
+    action.isFilter = true;
+    action.role = `${filterName} ${stageName}`;
+
     filters.push(action);
 
     this.merge();
@@ -100,8 +103,6 @@ Stage.prototype.handle = function handle(req, res, originNext) {
       return;
     }
 
-    req.stageIndex = stageIndex;
-
     invokeAction(stageIndex); // eslint-disable-line no-use-before-define
   }
 
@@ -112,6 +113,8 @@ Stage.prototype.handle = function handle(req, res, originNext) {
     // 提供跳过stage处理流程的功能
     next.origin = originNext;
     next.to = to;
+
+    req.stageIndex = stageIndex;
 
     return actions[stageIndex].call(stage, req, res, next);
   }
@@ -141,7 +144,7 @@ Stage.prototype.handle = function handle(req, res, originNext) {
       res.forwardSent = true;
       // 允许forward到一个外域名，但必须是http或https协议开头
       if (pathname.startsWith('http')) {
-        to('requestProxy');
+        to('beforeRequestProxy');
         return;
       }
 
