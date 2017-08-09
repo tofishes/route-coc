@@ -55,7 +55,6 @@ stage.after('requestProxy', function afterRequestProxy(req, res, next) {
   log.debug('path:', pathname);
 
   if (pathname === '/forward') {
-    log.info(req.router, '********');
     res.forward('/proxy');
     // res.redirect('http://www.163.com');
     // res.status(200).send('hello 200 ok!');
@@ -69,8 +68,6 @@ stage.after('requestProxy', function afterRequestProxy(req, res, next) {
 });
 stage.before('response', function beforeResponse(req, res, next) {
   const apiInfo = res.apiInfo;
-
-  log.debug(apiInfo, '-----')
 
   Object.keys(apiInfo).map(name => {
     const info = apiInfo[name];
