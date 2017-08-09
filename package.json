@@ -32,7 +32,7 @@
     "request": "^2.72.0",
     "t-log": "^1.1.0",
     "ua-parser-js": "^0.7.13",
-    "value-chain": "^1.0.4"
+    "value-chain": "^1.0.5"
   },
   "devDependencies": {
     "mocha": "^3.4.2",
