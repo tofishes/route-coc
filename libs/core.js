@@ -20,6 +20,9 @@ const runTask = require('../stages/run-task');
 const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
 const response = require('../stages/response');
+// 占位流程，使response，requestRroxy的before after filter有效
+const beforeResponse = (req, res, next) => next();
+const beforeRequestProxy = (req, res, next) => next();
 
 const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
@@ -54,8 +57,8 @@ function simpleApiDataName(api) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, initHttpRequest, matchRouter, handleInterceptor,
-    handleRouter, requestProxy, runTask, getViewPath, render, response
+    pageInfo, initHttpRequest, matchRouter, handleInterceptor, handleRouter,
+    beforeRequestProxy, requestProxy, runTask, getViewPath, render, beforeResponse, response
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
   const {
