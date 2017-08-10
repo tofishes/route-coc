@@ -9,7 +9,7 @@
   ### Added
   * 增加response stage做最后响应阶段，原来的 requestProxy 和 render 不做最终响应
   * res.html 保存渲染模板后的html
-  * requestProxy 记录一些apiInfo数据
+  * requestProxy 增加apiInfo数据记录
 
 * [v1.2.5 ~ v1.2.6] - 2017-06-02
 
