@@ -21,8 +21,12 @@ const getViewPath = require('../stages/get-view-path');
 const render = require('../stages/render');
 const response = require('../stages/response');
 // 占位流程，使response，requestRroxy的before after filter有效
-const beforeResponse = (req, res, next) => next();
-const beforeRequestProxy = (req, res, next) => next();
+function beforeResponse(req, res, next) {
+  next();
+}
+function beforeRequestProxy(req, res, next) {
+  next();
+}
 
 const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
