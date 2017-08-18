@@ -13,6 +13,7 @@ const Stage = require('./stage');
 const pageInfo = require('../stages/page-info');
 const initHttpRequest = require('../stages/init-http-request');
 const matchRouter = require('../stages/match-router');
+const upload = require('../stages/upload');
 const handleInterceptor = require('../stages/handle-interceptor');
 const handleRouter = require('../stages/handle-router');
 const requestProxy = require('../stages/request-proxy');
@@ -32,6 +33,7 @@ const pwd = process.cwd();
 const defaultRouterDir = `${pwd}/routers`;
 const defaultInterceptorDir = `${pwd}/interceptors`;
 const defaultViewDir = `${pwd}/views`;
+const defaultUploadDir = `${pwd}/uploads`;
 
 function loadRoutes(dir) {
   const map = {};
@@ -61,7 +63,7 @@ function simpleApiDataName(api) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, initHttpRequest, matchRouter, handleInterceptor, handleRouter,
+    pageInfo, initHttpRequest, matchRouter, upload, handleInterceptor, handleRouter,
     beforeRequestProxy, requestProxy, runTask, getViewPath, render, beforeResponse, response
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
@@ -113,6 +115,7 @@ module.exports = (app, args = {}) => {
   stage.set('handleAPI', handleAPI);
 
   stage.set('ajaxCache', ajaxCache);
+  stage.set('uploadDir', defaultUploadDir);
 
   // 添加默认模板引擎
   const nunjucksEnv = nunjucks.configure(viewDir, {
