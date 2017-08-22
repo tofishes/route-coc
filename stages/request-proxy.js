@@ -62,7 +62,6 @@ function requestProxy(req, res, next) {
     // 回调中跳转，性能一样，都会等待代理响应后才发起客户端响应
     next.to('beforeResponse');
   });
-
 }
 
 module.exports = requestProxy;

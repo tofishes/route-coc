@@ -23,7 +23,7 @@ module.exports = {
   '/forward/to/baidu-in-api': {
     'get': {
       api(req, res) {
-        res.forward('https://www.baidu.com');
+        res.forward('http://www.baidu.com');
       }
     }
   },
