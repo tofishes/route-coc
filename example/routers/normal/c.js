@@ -96,5 +96,21 @@ module.exports = {
         res.send(!!result);
       }
     }
+  },
+  '/api/date': {
+    'get': {
+      handle(data, req, res) {
+        res.send('' + Date.now());
+      }
+    }
+  },
+  '/test/cache/expires': {
+    'get': {
+      'api': 'http://localhost:8080/api/date',
+      cache: 300,
+      handle(data, req, res) {
+        res.send('' + data.date);
+      }
+    }
   }
 };

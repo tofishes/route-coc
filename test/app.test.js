@@ -18,6 +18,35 @@ describe('App server request', () => {
       .expect(200, /热门评论/, done);
   });
 
+  it('should get cache data when during validity period', done => {
+    const client = request(app);
+    client.get('/test/cache/expires')
+      .end((err, res) => {
+        const fisrtData = res.text;
+
+        client.get('/test/cache/expires')
+          .expect(fisrtData, done);
+      });
+  });
+
+  it('should get new data when cache is expired', done => {
+    const client = request(app);
+    client.get('/test/cache/expires')
+      .end((err, res) => {
+        const fisrtData = res.text;
+
+        setTimeout(() => {
+          client.get('/test/cache/expires')
+            .expect((res) => {
+              if (res.text === fisrtData) {
+                throw new Error('not update cache');
+              }
+            })
+            .end(done);
+          }, 400);
+      });
+  });
+
   it('should return 404', done => {
     request(app)
       .get('/404')
@@ -201,12 +230,11 @@ describe('Interceptors', () => {
   it('should not intercept assets file request', done => {
     request(app)
       .get('/test/ext/b.jpg')
-      .expect(404, res => {
+      .expect(res => {
         if (res.text === 'no intercept ext') {
           throw new Error('intercept fail');
         }
-      })
-      .end(done);
+      }).expect(404, done);
   });
 
   it('should intercept router request', done => {
@@ -232,8 +260,8 @@ describe('Interceptors', () => {
   });
 
   it('should intercept and get comment list from cache and cache is func', done => {
-    request(app)
-      .get('/test/intercept/series/comments')
+    const client = request(app);
+    client.get('/test/intercept/series/comments')
       .expect(res => {
         if (res.text !== 'true') {
           throw new Error('intercept and get comment list fail');
