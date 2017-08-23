@@ -54,7 +54,13 @@ function handleConfig(configArg, req, res) {
   const body = config.body || req.body;
   const name = config.name;
   const cache = config.cache;
-  const excute = func => func.call(config, req, res);
+  const excute = func => {
+    if (isFunc(func)) {
+      return func.call(config, req, res);
+    }
+
+    return func;
+  };
   // 如果是拦截器，需要把handle合并进来
   // 拦截器api为非字符串型时，仅支持数组项内的handle，不支持全局handle
   if (isString(api)) {
@@ -97,19 +103,13 @@ function handleConfig(configArg, req, res) {
     apiItem = Object.assign({ query, body, name, cache }, apiItem);
 
     // 参数处理
-    if (isFunc(apiItem.query)) {
-      apiItem.query = excute(apiItem.query);
-    }
-    if (isFunc(apiItem.body)) {
-      apiItem.body = excute(apiItem.body);
-    }
+    apiItem.query = excute(apiItem.query);
+    apiItem.body = excute(apiItem.body);
+    // 缓存
+    apiItem.cache = excute(apiItem.cache);
     // 数据名
     if (!apiItem.name) {
       apiItem.name = stage.get('apiDataName').call(router, apiItem.api);
-    }
-    // 缓存
-    if (isFunc(apiItem.cache)) {
-      apiItem.cache = excute(apiItem.cache);
     }
 
     task.addApiTask(apiItem);
