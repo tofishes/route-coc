@@ -52,7 +52,7 @@ module.exports = {
     'get': {
       'api': 'http://localhost:8080/api/comment/list',
       handle(data) {
-        const comments = data.comments;
+        const comments = data.getList('comments.data.list');
         const list = data.getList('list.data.list');
 
         this.view = 'forward-and-render-handler';

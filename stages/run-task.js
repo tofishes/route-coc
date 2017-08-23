@@ -6,18 +6,20 @@ function handleData(req, res, next) {
   if (router && router.handle) {
     const data = router.handle(res.apiData, req, res);
 
-    if (data) {
-      valueChain.set(data);
+    if (!data) {
+      return next();
     }
+
+    valueChain.set(data);
 
     if (router.name) {
       res.apiData[router.name] = data;
     } else {
-      res.apiData = data || res.apiData;
+      res.apiData = data;
     }
   }
 
-  next();
+  return next();
 }
 
 module.exports = function runTask(req, res, next) {
