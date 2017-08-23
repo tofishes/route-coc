@@ -1,6 +1,8 @@
+const querystring = require('querystring');
 const async = require('async');
 const log = require('t-log');
 const env = require('../utils/env');
+const timeRecord = require('../utils/time-record');
 const parseURLMethod = require('../utils/parse-url-method');
 const valueChain = require('value-chain');
 
@@ -63,11 +65,11 @@ class Task {
 
     const urlMethod = parseURLMethod(apiConfig.api, req.method);
     let url = urlMethod.url;
+    const cacheKey = url + querystring.stringify(qs);
 
     const handleAPI = req.stage.get('handleAPI');
     url = handleAPI(url, req);
 
-    apiConfig.fullAPI = url;
     apiConfig.method = urlMethod.method;
 
     function action(callback) {
@@ -75,9 +77,14 @@ class Task {
 
       res.apiInfo[dataName] = apiConfig;
 
-      if (cache) {
+      let expires = cache;
+      if (cache === true) {
+        expires = Number.MAX_VALUE;
+      }
+
+      if (cache && !timeRecord.isExpired(cacheKey, expires)) {
         const getCache = req.stage.get('apiDataCache');
-        let result = getCache.call(req.router, url);
+        let result = getCache.call(req.router, cacheKey);
 
         if (result) {
           const consumeTime = timer.end();
@@ -129,7 +136,8 @@ class Task {
         // 必须缓存原始数据，否则不同路由的数据共享在handle时会出问题
         if (willCache) {
           const setCache = req.stage.get('apiDataCache');
-          setCache.call(req.router, url, result);
+          setCache.call(req.router, cacheKey, result);
+          timeRecord.set(cacheKey);
         }
 
         if (apiConfig.handle) {
