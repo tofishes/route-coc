@@ -70,7 +70,6 @@ module.exports = (app, args = {}) => {
   const {
     routerDir = defaultRouterDir,           // 路由目录
     interceptorDir = defaultInterceptorDir, // 拦截器目录
-    interceptXhr = false,                   // 是否拦截ajax请求，默认不拦截
     viewDir = defaultViewDir,               // 视图模板目录
     viewExclude = ['**/include/**'],        // 排除自动渲染模板的目录，采用glob匹配规则
     stages = defaultStages,                 // 默认stage列表
@@ -106,7 +105,6 @@ module.exports = (app, args = {}) => {
   stage.set('routers', routers);
   stage.set('views', viewDir);
   stage.set('viewExclude', viewExclude);
-  stage.set('interceptXhr', interceptXhr);
   // 保存接口数据缓存方法
   stage.set('apiDataCache', apiDataCache);
   // 保存接口数据名方法
