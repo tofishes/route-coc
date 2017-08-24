@@ -76,6 +76,13 @@ module.exports = {
       }
     }
   },
+  '/test/intercept/ajax': {
+    'get': {
+      handle(data, req, res) {
+        res.send(data.getMap('xhr.intercept'));
+      }
+    }
+  },
   '/mixed/api-config': {
     'get': {
       api() {

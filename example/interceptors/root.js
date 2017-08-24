@@ -25,6 +25,14 @@ module.exports = {
       return data;
     }
   },
+  '/test/intercept/ajax': {
+    ajax: true,
+    series: true,
+    name: 'xhr',
+    handle() {
+      return { intercept: 'ok' };
+    }
+  },
   '/test/ext/a.jpg': {
     handle(data, req, res) {
       res.send('has intercept ext');

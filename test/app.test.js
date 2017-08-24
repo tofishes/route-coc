@@ -282,6 +282,13 @@ describe('Interceptors', () => {
       .end(done);
   });
 
+  it('should intercept xhr when config ajax=true', done => {
+    request(app)
+      .get('/test/intercept/ajax')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect('ok', done);
+  });
+
   it('should interceptor response', done => {
     request(app)
       .get('/intercept/has/redirect/this-is-not-excute')
