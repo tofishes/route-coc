@@ -1,3 +1,14 @@
+* [v1.3.0] - 2017-08-11
+
+  ### Changed
+
+  1. 取消全局interceptXhr设置，改为知道单个interceptor配置项ajax=true|false。
+  2. 接口数据缓存由单纯的boolean改为可配置为有效期毫秒数。
+
+  ### Added
+
+  1. 新增文件上传参数解析，正式支持文件上传处理。
+
 * [v1.2.10] - 2017-08-11
 
   ### Fixed
