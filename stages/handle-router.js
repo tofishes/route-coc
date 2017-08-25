@@ -8,24 +8,20 @@ function isFunc(obj) {
 function isString(obj) {
   return typeOf(obj).is('string');
 }
-function handleConfig(configArg, req, res) {
-  const stage = req.stage;
-  // 删除了config属性，这里必须克隆，避免影响原对象
-  let config = configArg;
-  let router = configArg;
+function handleConfig(originConfig, req, res) {
+  let config = originConfig;
 
   if (isFunc(config)) {
-    config = router = config(req, res);
+    config = config(req, res);
   }
 
   if (!config) {
-    return router;
+    return config;
   }
 
   let api = config.api;
   const isInterceptor = config.type === 'interceptor';
 
-  // 统一api配置数据结构
   // api可以是字符串，字符串数组，对象混合字符串数组，函数(返回前面3中类型数据)
   if (isFunc(api)) {
     api = api.call(config, req, res);
@@ -49,18 +45,6 @@ function handleConfig(configArg, req, res) {
     return config;
   }
 
-  // 统一格式
-  const query = config.query || req.query;
-  const body = config.body || req.body;
-  const name = config.name;
-  const cache = config.cache;
-  const excute = func => {
-    if (isFunc(func)) {
-      return func.call(config, req, res);
-    }
-
-    return func;
-  };
   // 如果是拦截器，需要把handle合并进来
   // 拦截器api为非字符串型时，仅支持数组项内的handle，不支持全局handle
   if (isString(api)) {
@@ -68,58 +52,29 @@ function handleConfig(configArg, req, res) {
     api = [{ api, handle }];
   }
 
-  if (! Array.isArray(api)) {
+  if (!Array.isArray(api)) {
     throw new TypeError('The type of api must be String or Array or Function');
   }
 
-  const isSeries = config.series;
-  const taskName = isSeries ? 'series' : 'parallel';
-  let task = req.apisTask[taskName];
-
-  if (!task) {
-    task = new Task(isSeries).context({ req, res });
-  }
   /*
    * 统一格式为： [{api, query, body}...]，转为apiTask， 过滤掉item为函数情况下返回false
    */
   req.apis = api.map(item => {
-    let apiItem = item;
+    const isSeries = item.series || config.series;
+    const taskName = isSeries ? 'series' : 'parallel';
+    let task = req.apisTask[taskName];
 
-    if (isString(item)) {
-      apiItem = { 'api': item };
-    } else if (isFunc(item)) {
-      apiItem = excute(item);
-
-      if (!apiItem) {
-        return false;
-      }
-
-      if (isString(apiItem)) {
-        apiItem = { 'api': apiItem };
-      }
+    if (!task) {
+      task = new Task(isSeries).context({ req, res });
+      req.apisTask[taskName] = task;
     }
 
-    // 默认为对象类型，合并第一级配置的参数处理器
-    apiItem = Object.assign({ query, body, name, cache }, apiItem);
+    task.addApiTask(item, config);
 
-    // 参数处理
-    apiItem.query = excute(apiItem.query);
-    apiItem.body = excute(apiItem.body);
-    // 缓存
-    apiItem.cache = excute(apiItem.cache);
-    // 数据名
-    if (!apiItem.name) {
-      apiItem.name = stage.get('apiDataName').call(router, apiItem.api);
-    }
-
-    task.addApiTask(apiItem);
-
-    return apiItem;
+    return item;
   });
 
-  req.apisTask[taskName] = task;
-
-  return router;
+  return config;
 }
 /**
  * 处理路由

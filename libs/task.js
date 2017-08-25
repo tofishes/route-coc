@@ -1,13 +1,20 @@
 const querystring = require('querystring');
 const async = require('async');
 const log = require('t-log');
+const valueChain = require('value-chain');
 const env = require('../utils/env');
 const timeRecord = require('../utils/time-record');
 const parseURLMethod = require('../utils/parse-url-method');
-const valueChain = require('value-chain');
+const typeOf = require('../utils/typeof');
+
+function isFunc(obj) {
+  return typeOf(obj).is('function');
+}
+function isString(obj) {
+  return typeOf(obj).is('string');
+}
 
 class Task {
-
   constructor(isSeries) {
     this.tasks = [];
     this.props = {};
@@ -54,26 +61,66 @@ class Task {
   }
 
   // api类型任务
-  addApiTask(apiConfig) {
+  addApiTask(apiItem, config) {
     const { req, res } = this.props.context;
     const request = req.httpRequest();
 
-    const qs = apiConfig.query;
-    const body = apiConfig.body;
-    const dataName = apiConfig.name;
-    const cache = apiConfig.cache;
+    const excute = func => {
+      if (isFunc(func)) {
+        return func.call(config, req, res);
+      }
 
-    const urlMethod = parseURLMethod(apiConfig.api, req.method);
-    let url = urlMethod.url;
-    const cacheKey = url + querystring.stringify(qs);
+      return func;
+    };
 
-    const handleAPI = req.stage.get('handleAPI');
-    url = handleAPI(url, req);
-
-    apiConfig.method = urlMethod.method;
+    const query = config.query || req.query;
+    const body = config.body || req.body;
+    const name = config.name;
+    let cache = config.cache;
 
     function action(callback) {
       const timer = log.time();
+
+      let apiConfig = apiItem;
+
+      if (isString(apiItem)) {
+        apiConfig = { 'api': apiItem };
+      } else if (isFunc(apiItem)) {
+        apiConfig = excute(apiItem);
+
+        if (!apiConfig) {
+          return callback();
+        }
+
+        if (isString(apiConfig)) {
+          apiConfig = { 'api': apiConfig };
+        }
+      }
+
+      // 默认为对象类型，合并第一级配置的参数处理器
+      apiConfig = Object.assign({ query, body, name, cache }, apiConfig);
+
+      // 参数处理
+      apiConfig.query = excute(apiConfig.query);
+      apiConfig.body = excute(apiConfig.body);
+      // 缓存
+      apiConfig.cache = excute(apiConfig.cache);
+      // 数据名
+      if (!apiConfig.name) {
+        apiConfig.name = req.stage.get('apiDataName').call(config, apiConfig.api);
+      }
+
+      const dataName = apiConfig.name;
+      cache = apiConfig.cache;
+
+      const urlMethod = parseURLMethod(apiConfig.api, req.method);
+      let url = urlMethod.url;
+      const cacheKey = url + querystring.stringify(apiConfig.query);
+
+      const handleAPI = req.stage.get('handleAPI');
+      url = handleAPI(url, req);
+
+      apiConfig.method = urlMethod.method;
 
       res.apiInfo[dataName] = apiConfig;
 
@@ -84,7 +131,7 @@ class Task {
 
       if (cache && !timeRecord.isExpired(cacheKey, expires)) {
         const getCache = req.stage.get('apiDataCache');
-        let result = getCache.call(req.router, cacheKey);
+        let result = getCache.call(config, cacheKey);
 
         if (result) {
           const consumeTime = timer.end();
@@ -93,13 +140,12 @@ class Task {
           Object.assign(res.apiInfo[dataName], { consumeTime, headers, resBody });
 
           if (apiConfig.handle) {
-            result = apiConfig.handle.call(req.router, result, req, res);
+            result = apiConfig.handle.call(config, result, req, res);
           }
 
           res.apiData[dataName] = valueChain.set(result);
 
-          callback(null, result);
-          return;
+          return callback(null, result);
         }
       }
 
@@ -123,25 +169,23 @@ class Task {
           }
 
           result = { code, message, resBody, error };
-        } else {
-          if (!response || response.statusCode !== 200) {
-            willCache = false;
-            result = {
-              code: response ? response.statusCode : 500,
-              message: 'response exception, not 200 ok.',
-              resBody
-            };
-          }
+        } else if (!response || response.statusCode !== 200) {
+          willCache = false;
+          result = {
+            code: response ? response.statusCode : 500,
+            message: 'response exception, not 200 ok.',
+            resBody
+          };
         }
         // 必须缓存原始数据，否则不同路由的数据共享在handle时会出问题
         if (willCache) {
           const setCache = req.stage.get('apiDataCache');
-          setCache.call(req.router, cacheKey, result);
+          setCache.call(config, cacheKey, result);
           timeRecord.set(cacheKey);
         }
 
         if (apiConfig.handle) {
-          result = apiConfig.handle.call(req.router, valueChain.set(result), req, res);
+          result = apiConfig.handle.call(config, valueChain.set(result), req, res);
         }
 
         res.apiData[dataName] = valueChain.set(result);
@@ -149,9 +193,9 @@ class Task {
         return callback(error, result);
       };
 
-      request[apiConfig.method]({
-        body,
-        qs,
+      return request[apiConfig.method]({
+        body: apiConfig.body,
+        qs: apiConfig.query,
         url
       }, complete);
     }
