@@ -36,9 +36,12 @@
     "value-chain": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^3.4.2",
-    "marko": "^3.14.3",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-plugin-import": "^2.7.0",
     "istanbul": "^0.4.5",
+    "marko": "^3.14.3",
+    "mocha": "^3.4.2",
     "should": "^11.1.1",
     "supertest": "^2.0.1",
     "swig": "^1.4.2"

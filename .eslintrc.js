@@ -6,11 +6,10 @@ module.exports = {
         "node": true,
         "mocha": true
     },
-    "extends": "airbnb",
+    "extends": "airbnb-base",
     "parserOptions": {
         "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true
+            "experimentalObjectRestSpread": true
         },
         "ecmaVersion": 2017,
         "sourceType": "module"
@@ -20,17 +19,13 @@ module.exports = {
         // "vue"
     ],
     "globals": {
-        "$": true,
-        "lj": true,
-        "_": true,
-        "api": true,
-        "moment": true,
-        "template": true
     },
     "rules": {
         "no-param-reassign": ["error", { "props": false }],
         "quote-props": ["error", "consistent"],
         "comma-dangle": 0,
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "arrow-parens": ["error", "as-needed"],
+        "no-bitwise": ["error", { "allow": ["~"] }]
     }
 };
