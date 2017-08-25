@@ -190,7 +190,7 @@ class Task {
 
         res.apiData[dataName] = valueChain.set(result);
 
-        return callback(error, result);
+        return callback(null, result);
       };
 
       return request[apiConfig.method]({
