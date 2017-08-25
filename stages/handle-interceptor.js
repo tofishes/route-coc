@@ -15,8 +15,8 @@ function match(pathname, interceptors, isXhr) {
       return false;
     }
 
+    const matchPath = interceptor.pathRegx.test(pathname);
     const route = interceptor.route;
-    const matchPath = interceptor.pathRegx.exec(pathname);
     const routeExt = ~route.indexOf('.');
     const ignoreExt = routeExt || !~pathname.indexOf('.');
 
