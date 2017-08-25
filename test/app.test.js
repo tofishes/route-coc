@@ -37,13 +37,13 @@ describe('App server request', () => {
 
         setTimeout(() => {
           client.get('/test/cache/expires')
-            .expect((res) => {
-              if (res.text === fisrtData) {
+            .expect(res2 => {
+              if (res2.text === fisrtData) {
                 throw new Error('not update cache');
               }
             })
             .end(done);
-          }, 400);
+        }, 400);
       });
   });
 
@@ -111,6 +111,30 @@ describe('App server request', () => {
         }
       })
       .end(done);
+  });
+
+  it('should can get prev api data in query|body|handle when prev api is series', done => {
+    request(app)
+      .get('/series-apis/get-data-from-prev')
+      .expect('true', done);
+  });
+
+  it('should can not get prev api data in query|body|handle when prev api is not series', done => {
+    request(app)
+      .get('/series-apis/get-data-from-prev2')
+      .expect('false', done);
+  });
+
+  it('should can get prev api data in apiFunction return query|body|handle when prev api is series', done => {
+    request(app)
+      .get('/series-apis/get-data-from-prev3?series=true')
+      .expect('true', done);
+  });
+
+  it('should can not get prev api data in apiFunction return query|body|handle when prev api is not series', done => {
+    request(app)
+      .get('/series-apis/get-data-from-prev3')
+      .expect('false', done);
   });
 });
 

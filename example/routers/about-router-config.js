@@ -83,5 +83,106 @@ module.exports = {
         return res.send('fixed literals');
       }
     }
+  },
+  '/series-apis/get-data-from-prev': {
+    'get': {
+      api: [
+        {
+          api: 'http://localhost:8080/backend/names',
+          series: true
+        },
+        {
+          api: 'http://localhost:8080/backend/comments',
+          query(req, res) {
+            req.queryCanGetNames = !!res.apiData.names.length;
+          },
+          body(req, res) {
+            req.bodyCanGetNames = !!res.apiData.names.length;
+          },
+          handle(data, req, res) {
+            req.handleCanGetNames = !!res.apiData.names.length;
+          }
+        }
+      ],
+      handle(data, req, res) {
+        const canGetName = req.queryCanGetNames
+            && req.bodyCanGetNames
+            && req.handleCanGetNames;
+
+        res.send(canGetName);
+      }
+    }
+  },
+  '/series-apis/get-data-from-prev2': {
+    'get': {
+      api: req1 => {
+        const series = req1.query.series;
+
+        return [
+          {
+            api: 'http://localhost:8080/backend/names',
+            series
+          },
+          {
+            api: 'http://localhost:8080/backend/comments',
+            query(req, res) {
+              req.queryCanGetNames = !!res.apiData.getList('names').length;
+            },
+            body(req, res) {
+              req.bodyCanGetNames = !!res.apiData.getList('names').length;
+            },
+            handle(data, req, res) {
+              req.handleCanGetNames = !!res.apiData.getList('names').length;
+            }
+          }
+        ];
+      },
+      handle(data, req, res) {
+        const canGetName = req.queryCanGetNames
+            && req.bodyCanGetNames
+            && req.handleCanGetNames;
+
+        res.send(canGetName);
+      }
+    }
+  },
+  '/series-apis/get-data-from-prev3': {
+    'get': {
+      api: req1 => {
+        const series = req1.query.series;
+
+        return [
+          {
+            api: 'http://localhost:8080/backend/names',
+            series
+          },
+          (req2, res2) => {
+            if (res2.apiData.getList('names').length) {
+              return {
+                api: 'http://localhost:8080/backend/comments',
+                query(req) {
+                  req.queryCanGetNames = true;
+                },
+                body(req) {
+                  req.bodyCanGetNames = true;
+                },
+                handle(data, req) {
+                  req.handleCanGetNames = true;
+                }
+              };
+            }
+
+            return null;
+          }
+        ];
+      },
+      handle(data, req, res) {
+        const canGetName = req.queryCanGetNames
+            && req.bodyCanGetNames
+            && req.handleCanGetNames;
+
+        res.send(!!canGetName);
+      }
+    }
   }
 };
