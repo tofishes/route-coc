@@ -1,5 +1,17 @@
 const parser = require('ua-parser-js');
+const valueChain = require('value-chain');
 const urlInfo = require('../utils/url-info');
+
+function disableCache(disabled) {
+  if (!disabled) {
+    return;
+  }
+
+  const res = this;
+
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+}
+
 /**
  * 页面变量初始化等
  * @param  {[type]}   req  [description]
@@ -18,6 +30,9 @@ module.exports = function pageInfo(req, res, next) {
   });
 
   res.locals.request = req;
+  res.disableCache = disableCache.bind(res);
+
+  valueChain.set(res.apiData);
 
   next();
 };
