@@ -13,9 +13,7 @@ function getParam(pathInfo, paramKeys) {
     const prop = key.name;
     const val = decodeURIComponent(pathInfo[j]);
 
-    if (val !== 'undefined') {
-      param[prop] = val;
-    }
+    param[prop] = val;
   }
 
   return param;
