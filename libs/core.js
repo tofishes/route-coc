@@ -40,7 +40,7 @@ function loadRoutes(dir) {
   const files = glob.sync(`${dir}/**/*.js`);
 
   files.forEach(file => {
-    const routesPart = require(file); // eslint-disable-line global-require
+    const routesPart = require(file); // eslint-disable-line
     Object.assign(map, parseMultiName(routesPart));
   });
 
@@ -63,7 +63,7 @@ function simpleApiDataName(api) {
  */
 module.exports = (app, args = {}) => {
   const defaultStages = [
-    pageInfo, initHttpRequest, matchRouter, upload, handleInterceptor, handleRouter,
+    pageInfo, matchRouter, upload, initHttpRequest, handleInterceptor, handleRouter,
     beforeRequestProxy, requestProxy, runTask, getViewPath, render, beforeResponse, response
   ];
   // mount see more @ http://expressjs.com/en/4x/api.html#path-examples
@@ -123,12 +123,9 @@ module.exports = (app, args = {}) => {
   });
   stage.set('nunjucks', nunjucks);
   stage.set('nunjucksEnv', nunjucksEnv);
-
-  app.engine('njk', nunjucks.render);
   // 设置引擎默认后缀
-  if (!app.get('view engine')) {
-    app.set('view engine', 'njk');
-  }
+  stage.set('view engine', 'njk');
+  stage.engine('njk', nunjucksEnv.render.bind(nunjucksEnv));
 
   app.use(mount, (req, res, next) => {
     stage.handle(req, res, next);

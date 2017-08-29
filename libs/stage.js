@@ -5,7 +5,8 @@ function Stage(stages) {
   const befores = {};
   const afters = {};
 
-  this.stages = this.actions = stages;
+  this.stages = stages;
+  this.actions = stages;
   this.stageNames = stages.map(stage => {
     const name = stage.name;
 
@@ -17,6 +18,7 @@ function Stage(stages) {
   this.befores = befores;
   this.afters = afters;
   this.props = {};
+  this.engines = {};
 }
 
 ['before', 'after'].map(filterName => {
@@ -24,7 +26,7 @@ function Stage(stages) {
     const propname = `${filterName}s`;
     const filters = this[propname][stageName]; // this.befores[stagesName];
 
-    if (! filters) {
+    if (!filters) {
       throw new Error(`Stage ${name} does not exist`);
     }
 
@@ -59,6 +61,10 @@ Stage.prototype.set = function set(name, value) {
 Stage.prototype.get = function get(name) {
   return this.props[name];
 };
+Stage.prototype.engine = function engine(extName, render) {
+  this.engines[`.${extName}`] = render;
+  return this;
+};
 Stage.prototype.handle = function handle(req, res, originNext) {
   const stage = this;
   const actions = this.actions;
@@ -68,11 +74,11 @@ Stage.prototype.handle = function handle(req, res, originNext) {
   function to(actionName) {
     const index = actions.findIndex(action => action.name === actionName);
 
-    if (!~index) {
+    if (index < 0) {
       throw new Error(`Action ${actionName} does not exist!`);
     }
 
-    invokeAction(index);
+    invokeAction(index); // eslint-disable-line
 
     return index;
   }
@@ -116,7 +122,9 @@ Stage.prototype.handle = function handle(req, res, originNext) {
 
     req.stageIndex = stageIndex;
 
-    return actions[stageIndex].call(stage, req, res, next);
+    const action = actions[stageIndex];
+
+    return action.call(stage, req, res, next);
   }
 
   // 添加扩展属性
@@ -124,7 +132,8 @@ Stage.prototype.handle = function handle(req, res, originNext) {
   // pathname可实现forward功能
   req.pathname = req.path.replace(/\/+/g, '/'); // 纠正多个/的问题
   req.stageIndex = startIndex;
-  req.stage = res.stage = stage;
+  req.stage = stage;
+  res.stage = stage;
 
   res.apiData = {};
   res.apiInfo = {};

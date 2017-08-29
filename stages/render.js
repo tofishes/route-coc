@@ -19,10 +19,10 @@ function render(req, res, next) {
     return next();
   }
 
-  const engine = app.engines[res.viewExt];
+  const engine = app.engines[res.viewExt] || this.engines[res.viewExt];
 
   if (!engine) {
-    throw new Error(`.${res.viewExt} file type has no template engine`);
+    return next(new Error(`File type '${res.viewExt}' has no template engine`));
   }
 
   const data = Object.assign(res.apiData, res.locals);

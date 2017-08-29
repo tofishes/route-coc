@@ -22,7 +22,7 @@ function getViewPath(req, res, next) {
   }
 
   // 已设置默认引擎
-  const defaultEngine = app.get('view engine');
+  const defaultEngine = app.get('view engine') || this.get('view engine');
   let ext = path.extname(view);
 
   if (!ext) {
@@ -41,14 +41,14 @@ function getViewPath(req, res, next) {
     return next();
   };
 
-  fs.access(filePath, (err) => {
+  fs.access(filePath, err => {
     if (!err) {
       return success(filePath);
     }
 
     const indexFile = filePath.replace(ext, `/index${ext}`);
 
-    return fs.access(indexFile, (error) => {
+    return fs.access(indexFile, error => {
       if (!error) {
         success(indexFile);
         return;
