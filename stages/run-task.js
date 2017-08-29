@@ -31,17 +31,13 @@ module.exports = function runTask(req, res, next) {
       return handleData(req, res, next);
     }
 
-    return parallelTask.error(error => {
-      next(error);
-    }).run(() => {
+    return parallelTask.run(() => {
       handleData(req, res, next);
     });
   };
 
   if (seriesTask) {
-    seriesTask.error(error => {
-      next(error);
-    }).run(() => {
+    seriesTask.run(() => {
       if (res.forwardSent || res.hasSent || res.headersSent) {
         return;
       }

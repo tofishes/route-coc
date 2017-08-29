@@ -36,9 +36,7 @@ function handleInterceptor(req, res, next) {
   const seriesTask = req.apisTask.series;
 
   if (seriesTask) {
-    return seriesTask.error(error => {
-      next(error);
-    }).run(() => {
+    return seriesTask.run(() => {
       if (res.forwardSent || res.hasSent || res.headersSent) {
         return;
       }
