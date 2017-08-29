@@ -2,7 +2,6 @@ const querystring = require('querystring');
 const async = require('async');
 const log = require('t-log');
 const valueChain = require('value-chain');
-const env = require('../utils/env');
 const timeRecord = require('../utils/time-record');
 const parseURLMethod = require('../utils/parse-url-method');
 const typeOf = require('../utils/typeof');
@@ -160,8 +159,7 @@ class Task {
         if (error) {
           willCache = false;
           let code = 503;
-          let message = `API ${url} Service Unavailable.
-            ${env.isProduction ? '' : error.message}`;
+          let message = `API ${url} Service Unavailable. ${error.message}`;
 
           if (error.code === 'ETIMEDOUT') {
             code = 504;
@@ -169,10 +167,10 @@ class Task {
           }
 
           result = { code, message, resBody, error };
-        } else if (!response || response.statusCode !== 200) {
+        } else if (response.statusCode !== 200) {
           willCache = false;
           result = {
-            code: response ? response.statusCode : 500,
+            code: response.statusCode,
             message: 'response exception, not 200 ok.',
             resBody
           };
