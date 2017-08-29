@@ -45,7 +45,10 @@ module.exports = {
   },
   '/intercept/api/wrong/*': {
     'api': '/api/is/wrong',
-    'series': true
+    'series': true,
+    handle(data, req, res) {
+      res.status(data.code).send(data.message);
+    }
   },
   '/intercept/has/redirect/*': {
     handle(data, req, res) {
@@ -58,8 +61,12 @@ module.exports = {
     }
   },
   '/intercept/series/api-func-get-data': {
-    api: 'http://localhost:8080/api/comment/list',
-    name: 'interceptorData',
-    series: true
+    api(req) {
+      return [{
+        api: 'http://localhost:8080/api/comment/list',
+        series: req.query.series !== 'false'
+      }];
+    },
+    name: 'interceptorData'
   }
 };

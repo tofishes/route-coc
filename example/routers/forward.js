@@ -36,7 +36,10 @@ module.exports = {
   },
   '/task/error': {
     'get': {
-      'api': '/api/error/task'
+      'api': '/api/error/task',
+      handle(data, req, res) {
+        res.status(data.task.code).send(data.task.message);
+      }
     }
   },
   '/forward/and/render': {
@@ -64,6 +67,27 @@ module.exports = {
   '/module-name': {
     'get': {
       'view': 'module/url-info.njk'
+    }
+  },
+  '/render/after/series/task': {
+    'get': {
+      api: [
+        {
+          api: 'http://localhost:8080/api/comment/list',
+          series: true,
+          handle(data, req, res) {
+            if (req.query.render === 'ahead') {
+              res.send(data.getList('data.list')[0].content);
+            }
+          }
+        },
+        {
+          api: 'http://localhost:8080/backend/names',
+          handle(data, req, res) {
+            res.send(data[0].name);
+          }
+        }
+      ]
     }
   }
 };

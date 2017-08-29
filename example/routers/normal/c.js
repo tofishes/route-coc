@@ -9,6 +9,11 @@ module.exports = {
       return false;
     }
   },
+  '/marko': {
+    'get': {
+      view: 'marko.marko'
+    }
+  },
   '/redirect': {
     'get': {
       handle(data, req, res) {
@@ -107,17 +112,22 @@ module.exports = {
   '/api/date': {
     'get': {
       handle(data, req, res) {
-        res.send('' + Date.now());
+        res.status(req.query.statusCode || 200).send(`${Date.now()}`);
       }
     }
   },
   '/test/cache/expires': {
     'get': {
       'api': 'http://localhost:8080/api/date',
-      cache: 300,
+      'cache': 300,
       handle(data, req, res) {
-        res.send('' + data.date);
+        res.send(`${data.date}`);
       }
+    }
+  },
+  '/ext/engine/is/not/register': {
+    get: {
+      view: 'no-this.engine'
     }
   }
 };

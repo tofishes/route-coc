@@ -98,16 +98,12 @@ module.exports = {
           },
           body(req, res) {
             req.bodyCanGetNames = !!res.apiData.names.length;
-          },
-          handle(data, req, res) {
-            req.handleCanGetNames = !!res.apiData.names.length;
           }
         }
       ],
       handle(data, req, res) {
         const canGetName = req.queryCanGetNames
-            && req.bodyCanGetNames
-            && req.handleCanGetNames;
+            && req.bodyCanGetNames;
 
         res.send(canGetName);
       }
@@ -130,17 +126,13 @@ module.exports = {
             },
             body(req, res) {
               req.bodyCanGetNames = !!res.apiData.getList('names').length;
-            },
-            handle(data, req, res) {
-              req.handleCanGetNames = !!res.apiData.getList('names').length;
             }
           }
         ];
       },
       handle(data, req, res) {
         const canGetName = req.queryCanGetNames
-            && req.bodyCanGetNames
-            && req.handleCanGetNames;
+            || req.bodyCanGetNames;
 
         res.send(canGetName);
       }
@@ -165,9 +157,6 @@ module.exports = {
                 },
                 body(req) {
                   req.bodyCanGetNames = true;
-                },
-                handle(data, req) {
-                  req.handleCanGetNames = true;
                 }
               };
             }
@@ -178,10 +167,29 @@ module.exports = {
       },
       handle(data, req, res) {
         const canGetName = req.queryCanGetNames
-            && req.bodyCanGetNames
-            && req.handleCanGetNames;
+            && req.bodyCanGetNames;
 
         res.send(!!canGetName);
+      }
+    }
+  },
+  '/test/will/api-timeout': {
+    'get': {
+      api: 'http://www.baidu.com',
+      name: 'baidu',
+      timeout: 1,
+      handle(data, req, res) {
+        res.status(data.baidu.code).send('timeout');
+      }
+    }
+  },
+  '/test/willnot/api-timeout': {
+    'get': {
+      api: 'http://www.baidu.com',
+      name: 'baidu',
+      timeout: 100000000,
+      handle(data, req, res) {
+        res.send(data.baidu);
       }
     }
   }

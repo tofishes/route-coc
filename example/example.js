@@ -1,6 +1,6 @@
 const log = require('t-log');
 const express = require('express');
-const swig = require('swig');
+const swig = require('swig'); // eslint-disable-line
 const coc = require('../index');
 const apiMap = require('./api-map');
 
@@ -8,16 +8,22 @@ const app = express();
 
 app.engine('swig', swig.renderFile);
 
-require('marko/node-require').install();
+require('marko/node-require').install();  // eslint-disable-line
 app.engine('marko', (filePath, data, callback) => {
   const template = require(filePath); // eslint-disable-line
 
   template.renderToString(data, callback);
 });
 
-app.use('/favicon.ico', (req, res) => {
-  return res.send('ok');
+app.use('/favicon.ico', (req, res) => res.send('ok'));
+
+// 子目录挂载应放在全局的前面
+const stageB = coc(app, {
+  mount: '/b-plan',
+  routerDir: `${__dirname}/routers-b`
 });
+
+stageB.set('view engine', '.njk'); // can startsWith dot or not dot
 
 const stage = coc(app, {
   interceptorDir: `${__dirname}/interceptors`,

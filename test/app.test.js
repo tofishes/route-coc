@@ -47,6 +47,22 @@ describe('App server request', () => {
       });
   });
 
+  it('should get new data every time when api is exception', done => {
+    const client = request(app);
+    client.get('/test/cache/expires')
+      .end((err, res) => {
+        const fisrtData = res.text;
+
+        client.get('/test/cache/expires?statusCode=500')
+          .expect(res2 => {
+            if (res2.text === fisrtData) {
+              throw new Error('can not get new data');
+            }
+          })
+          .end(done);
+      });
+  });
+
   it('should return 404', done => {
     request(app)
       .get('/404')
@@ -113,25 +129,25 @@ describe('App server request', () => {
       .end(done);
   });
 
-  it('should can get prev api data in query|body|handle when prev api is series', done => {
+  it('should can get prev api data in query|body when prev api is series', done => {
     request(app)
       .get('/series-apis/get-data-from-prev')
       .expect('true', done);
   });
 
-  it('should can not get prev api data in query|body|handle when prev api is not series', done => {
+  it('should can not get prev api data in query|body when prev api is not series', done => {
     request(app)
       .get('/series-apis/get-data-from-prev2')
       .expect('false', done);
   });
 
-  it('should can get prev api data in apiFunction return query|body|handle when prev api is series', done => {
+  it('should can get prev api data in apiFunction return query|body when prev api is series', done => {
     request(app)
       .get('/series-apis/get-data-from-prev3?series=true')
       .expect('true', done);
   });
 
-  it('should can not get prev api data in apiFunction return query|body|handle when prev api is not series', done => {
+  it('should can not get prev api data in apiFunction return query|body when prev api is not series', done => {
     request(app)
       .get('/series-apis/get-data-from-prev3')
       .expect('false', done);
@@ -238,102 +254,11 @@ describe('render view and parse query', () => {
       .get('/proxy/api/comment/list')
       .expect(200, /鞋子非常好，质量棒棒哒/, done);
   });
-});
 
-describe('Interceptors', () => {
-  it('should intercept a.jpg', done => {
+  it('should get error when ext engine is not register', done => {
     request(app)
-      .get('/test/ext/a.jpg')
-      .expect(res => {
-        if (res.text !== 'has intercept ext') {
-          throw new Error('intercept fail');
-        }
-      })
-      .end(done);
-  });
-  it('should not intercept assets file request', done => {
-    request(app)
-      .get('/test/ext/b.jpg')
-      .expect(res => {
-        if (res.text === 'no intercept ext') {
-          throw new Error('intercept fail');
-        }
-      }).expect(404, done);
-  });
-
-  it('should intercept router request', done => {
-    request(app)
-      .get('/test/ext/b')
-      .expect(res => {
-        if (res.text !== 'no intercept ext') {
-          throw new Error('intercept fail');
-        }
-      })
-      .end(done);
-  });
-
-  it('should intercept and proxy to baidu', done => {
-    request(app)
-      .get('/test/forward/baidu')
-      .expect(res => {
-        if (!~res.text.indexOf('百度一下，你就知道')) {
-          throw new Error('not baidu content');
-        }
-      })
-      .end(done);
-  });
-
-  it('should intercept and get comment list from cache and cache is func', done => {
-    const client = request(app);
-    client.get('/test/intercept/series/comments')
-      .expect(res => {
-        if (res.text !== 'true') {
-          throw new Error('intercept and get comment list fail');
-        }
-      })
-      .end(done);
-  });
-
-  it('should not intercept xhr', done => {
-    request(app)
-      .get('/test/intercept/series/comments')
-      .set('X-Requested-With', 'XMLHttpRequest')
-      .expect(res => {
-        if (res.text !== 'false') {
-          throw new Error('donot intercept xhr fail');
-        }
-      })
-      .end(done);
-  });
-
-  it('should intercept xhr when config ajax=true', done => {
-    request(app)
-      .get('/test/intercept/ajax')
-      .set('X-Requested-With', 'XMLHttpRequest')
-      .expect('ok', done);
-  });
-
-  it('should interceptor response', done => {
-    request(app)
-      .get('/intercept/has/redirect/this-is-not-excute')
-      .expect(200, /interceptor response/, done);
-  });
-
-  it('should interceptor forward', done => {
-    request(app)
-      .get('/intercept/has/forward/this-is-not-excute')
-      .expect(200, /hello world/, done);
-  });
-
-  it('should can get data in router api-function from intercept api when set intercept series = true', done => {
-    request(app)
-      .get('/intercept/series/api-func-get-data')
-      .expect(res => {
-        if (res.text !== 'two') {
-          throw new Error('router function api config fail to get apiData from interceptor');
-        }
-      })
-      .end(done);
+      .get('/ext/engine/is/not/register')
+      .expect(500, /File type '.engine' has no template engine/, done);
   });
 });
 
@@ -375,16 +300,28 @@ describe('Config is function', () => {
 });
 
 describe('Task run', () => {
-  it('should 500 when api url is wrong', done => {
+  it('should 503 when api url is wrong', done => {
     request(app)
       .get('/task/error')
-      .expect(500, /Invalid URI/, done);
+      .expect(503, /Invalid URI/, done);
   });
 
-  it('should 500 when api url of series interceptor is wrong', done => {
+  it('should 503 when api url of series interceptor is wrong', done => {
     request(app)
       .get('/intercept/api/wrong/this-is-not-excute')
-      .expect(500, /Invalid URI/, done);
+      .expect(503, /Invalid URI/, done);
+  });
+
+  it('should not run parallel task when res.hasSent after series task', done => {
+    request(app)
+      .get('/render/after/series/task?render=ahead')
+      .expect(200, /收到鞋子后打开一看真的很精致/, done);
+  });
+
+  it('should run parallel task when no res.hasSent after series task', done => {
+    request(app)
+      .get('/render/after/series/task')
+      .expect(200, /tofishes/, done);
   });
 });
 

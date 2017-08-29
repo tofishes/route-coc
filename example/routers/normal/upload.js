@@ -1,8 +1,6 @@
-const log = require('t-log');
-
 module.exports = {
   '/upload': {
-    'post': (req, res) => {
+    post(req, res) {
       return res.json(req.body);
     },
     'get': {
