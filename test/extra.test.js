@@ -1,3 +1,4 @@
+const exec = require('child_process').exec;
 const request = require('supertest');
 const app = require('../example/example');
 
@@ -26,6 +27,23 @@ describe('Extra app functions', () => {
       .expect(200, /百度一下/, done);
   });
 
+  it('should auto creat uploadDir', done => {
+    exec(`rm -rf ${process.cwd()}/uploads`, () => {
+      request(app)
+        .post('/upload')
+        .attach('avatar', `${__dirname}/avatar.jpg`)
+        .expect(res => {
+          const body = res.body;
+          if (!~body.avatar.path.indexOf('/uploads')
+            || !body.avatar.path.endsWith('.jpg')
+          ) {
+            throw new Error('upload failed');
+          }
+        })
+        .end(done);
+    });
+  });
+
   it('should upload and get fields from req.body', done => {
     request(app)
       .post('/upload')
@@ -43,6 +61,8 @@ describe('Extra app functions', () => {
         ) {
           throw new Error('upload failed');
         }
+
+        exec(`rm -rf ${process.cwd()}/uploads`);
       })
       .end(done);
   });
