@@ -1,4 +1,5 @@
 const fs = require('fs');
+const mkdirp = require('mkdirp');
 const multiparty = require('multiparty');
 
 /**
@@ -9,35 +10,36 @@ const multiparty = require('multiparty');
  * @return {[type]}
  */
 module.exports = function upload(req, res, next) {
-  if (!req.router) {
+  if (!req.router || !req.is('multipart')) {
     next();
 
     return;
   }
 
-  if (req.is('multipart')) {
-    // cat set upload options through req.uploadOptions
-    const options = Object.assign({
-      uploadDir: this.get('uploadDir')
-    }, req.uploadOptions);
+  // cat set upload options through req.uploadOptions
+  const options = Object.assign({
+    uploadDir: this.get('uploadDir')
+  }, req.uploadOptions);
+
+  fs.access(options.uploadDir, fs.constants.W_OK, err => {
+    if (err) {
+      mkdirp.sync(options.uploadDir);
+    }
 
     const form = new multiparty.Form(options);
 
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (error, fields, files) => {
       // parse normal fields and files
       const inputs = Object.assign({}, fields, files);
 
       Object.keys(inputs).map(name => {
         const values = inputs[name];
-
         req.body[name] = values.length === 1 ? values[0] : values;
+
+        return name;
       });
 
-      next(err);
+      next(error);
     });
-
-    return;
-  }
-
-  next();
+  });
 };
