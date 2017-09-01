@@ -9,9 +9,17 @@ const handleConfig = require('./handle-router').handleConfig;
  * @param  {Function} next [description]
  * @return {[type]}        [description]
  */
-function match(pathname, interceptors, isXhr) {
+function match(req, interceptors) {
+  const pathname = req.pathname;
+
   return interceptors.filter(interceptor => {
-    if (isXhr && interceptor.ajax !== true) {
+    const intercept = interceptor.intercept;
+
+    if (intercept && !intercept.call(interceptor, req)) {
+      return false;
+    }
+
+    if (req.xhr && interceptor.ajax !== true) {
       return false;
     }
 
@@ -24,8 +32,7 @@ function match(pathname, interceptors, isXhr) {
   });
 }
 function handleInterceptor(req, res, next) {
-  const pathname = req.pathname;
-  const interceptors = match(pathname, this.get('interceptors'), req.xhr);
+  const interceptors = match(req, this.get('interceptors'));
 
   if (!interceptors.length) {
     return next();
