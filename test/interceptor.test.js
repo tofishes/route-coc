@@ -102,4 +102,16 @@ describe('Interceptors', () => {
       .get('/intercept/series/api-func-get-data?series=false')
       .expect('one', done);
   });
+
+  it('should has intercept when interceptor.intercept func return true', done => {
+    request(app)
+      .get('/intercept/by-config?intercept=true')
+      .expect('has intercept', done);
+  });
+
+  it('should not intercept when interceptor.intercept func return false', done => {
+    request(app)
+      .get('/intercept/by-config')
+      .expect('not intercept', done);
+  });
 });

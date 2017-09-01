@@ -27,5 +27,12 @@ module.exports = {
         res.json({ name: 'two' });
       }
     }
+  },
+  '/intercept/by-config': {
+    'get': {
+      handle(data, req, res) {
+        res.send('not intercept');
+      }
+    }
   }
 };

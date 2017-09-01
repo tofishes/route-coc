@@ -68,5 +68,14 @@ module.exports = {
       }];
     },
     name: 'interceptorData'
+  },
+  '/intercept/by-config': {
+    intercept(req) {
+      return !!req.query.intercept;
+    },
+    name: 'interceptor',
+    handle(data, req, res) {
+      res.send('has intercept');
+    }
   }
 };
