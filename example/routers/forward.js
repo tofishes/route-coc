@@ -5,7 +5,12 @@ module.exports = {
       query(req) {
         return req.query;
       },
-      handle(data, req) {
+      handle(data, req, res) {
+        if (!req.param.username) {
+          res.send('no username');
+          return null;
+        }
+
         return { 'username': req.query.username };
       },
       view() {

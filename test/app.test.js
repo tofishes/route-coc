@@ -171,6 +171,13 @@ describe('render view and parse query', () => {
       })
       .end(done);
   });
+
+  it('should ignore param when it is undefined', done => {
+    request(app)
+      .get('/hello/undefined')
+      .expect('no username', done);
+  });
+
   it('should only post and exec handle to response', done => {
     request(app)
       .post('/post')
