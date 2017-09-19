@@ -1,4 +1,9 @@
 function response(req, res, next) {
+  const disablePageCache = req.router && req.router.pageCache === false;
+  const disableAjaxCache = req.xhr && this.get('ajaxCache') === false;
+
+  res.disableCache(disablePageCache || disableAjaxCache);
+
   if (res.proxyResoponse) {
     return res.proxyResoponse.pipe(res);
   }
@@ -9,16 +14,10 @@ function response(req, res, next) {
    * 若想ajax始终得到json，不要配置view
    */
   if (res.html) {
-    const disablePageCache = req.router && req.router.pageCache === false;
-    res.disableCache(disablePageCache);
-
     return res.send(res.html);
   }
 
   if (req.xhr) {
-    const disableAjaxCache = req.xhr && this.get('ajaxCache') === false;
-    res.disableCache(disableAjaxCache);
-
     return res.json(res.apiData);
   }
 
