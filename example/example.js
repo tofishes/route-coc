@@ -20,7 +20,8 @@ app.use('/favicon.ico', (req, res) => res.send('ok'));
 // 子目录挂载应放在全局的前面
 const stageB = coc(app, {
   mount: '/b-plan',
-  routerDir: `${__dirname}/routers-b`
+  routerDir: `${__dirname}/routers-b`,
+  ajaxCache: false
 });
 
 stageB.set('view engine', '.njk'); // can startsWith dot or not dot

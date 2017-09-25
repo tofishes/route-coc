@@ -94,5 +94,17 @@ module.exports = {
         }
       ]
     }
+  },
+  '/res/goto, /res/goto/:code': {
+    'get': {
+      handle(data, req, res) {
+        if (req.param.code) {
+          res.goto(+req.param.code, '/hello');
+          return;
+        }
+
+        res.goto('/hello');
+      }
+    }
   }
 };
