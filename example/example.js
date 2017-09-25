@@ -8,13 +8,6 @@ const app = express();
 
 app.engine('swig', swig.renderFile);
 
-require('marko/node-require').install();  // eslint-disable-line
-app.engine('marko', (filePath, data, callback) => {
-  const template = require(filePath); // eslint-disable-line
-
-  template.renderToString(data, callback);
-});
-
 app.use('/favicon.ico', (req, res) => res.send('ok'));
 
 // 子目录挂载应放在全局的前面
@@ -35,6 +28,13 @@ const stage = coc(app, {
 
     return apiDomain + apiUrl;
   }
+});
+
+require('marko/node-require').install();  // eslint-disable-line
+stage.engine('marko', (filePath, data, callback) => {
+  const template = require(filePath); // eslint-disable-line
+
+  template.renderToString(data, callback);
 });
 
 // 查看阶段列表，每个阶段都可以用before,after处理
