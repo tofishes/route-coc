@@ -137,6 +137,13 @@ Stage.prototype.handle = function handle(req, res, originNext) {
 
   res.apiData = {};
   res.apiInfo = {};
+
+  // instead of res.redirect
+  res.goto = (...args) => {
+    res.gotoInfo = args;
+    to('beforeResponse');
+  };
+
   res.forward = pathname => {
     if (pathname === req.path) {
       const error = new Error('foward path cannot be the same as req.path!');

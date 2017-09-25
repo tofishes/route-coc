@@ -22,6 +22,11 @@ function getRequest() {
 module.exports = function initHttpRequest(req, res, next) {
   req.httpRequest = getRequest;
   req.apisTask = {};
+  // 保证在router.handle等处自处理响应时有效
+  const disablePageCache = req.router && req.router.pageCache === false;
+  const disableAjaxCache = req.xhr && this.get('ajaxCache') === false;
+
+  res.disableCache(disablePageCache || disableAjaxCache);
 
   next();
 };

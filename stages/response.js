@@ -1,8 +1,7 @@
 function response(req, res, next) {
-  const disablePageCache = req.router && req.router.pageCache === false;
-  const disableAjaxCache = req.xhr && this.get('ajaxCache') === false;
-
-  res.disableCache(disablePageCache || disableAjaxCache);
+  if (res.gotoInfo) {
+    return res.redirect(...res.gotoInfo);
+  }
 
   if (res.proxyResoponse) {
     return res.proxyResoponse.pipe(res);
