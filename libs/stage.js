@@ -1,5 +1,8 @@
 // class Stage
 // express中叫 layer, 这里则称为 stage（阶段），代表某个处理阶段
+const urlInfo = require('../utils/url-info');
+const qs = require('qs');
+
 const concat = Array.prototype.concat;
 function Stage(stages) {
   const befores = {};
@@ -151,7 +154,11 @@ Stage.prototype.handle = function handle(req, res, originNext) {
       return;
     }
 
-    req.pathname = pathname;
+    const info = urlInfo(pathname);
+
+    Object.assign(req.query, qs.parse(info.query));
+
+    req.pathname = info.pathname;
     req.stageIndex = 0;
     // 让转发前的流程先执行并在下一个next时终止
     // 然后继续转发后的流程

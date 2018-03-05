@@ -14,6 +14,11 @@ function getViewPath(req, res, next) {
 
   if (typeOf(view).is('function')) {
     view = view.call(router, req, res);
+
+    if (!view) {
+      next();
+      return;
+    }
   }
 
   // view配置可以不以/开头

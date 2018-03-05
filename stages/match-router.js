@@ -44,6 +44,9 @@ function matchRouter(req, res, next) {
 
   // 未匹配到路由
   if (!router) {
+    // 置空req.router，防止在forward过程中，req.router指向上一个匹配到的router
+    req.router = null;
+
     return next();
   }
 

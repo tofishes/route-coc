@@ -50,7 +50,7 @@ function requestProxy(req, res, next) {
     api: req.pathname,
     query: req.query,
     body: req.body
-  }
+  };
 
   const timer = log.time();
 

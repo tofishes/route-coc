@@ -117,6 +117,12 @@ describe('App server request', () => {
       .expect(200, /list/, done);
   });
 
+  it('should forward ok when has query', done => {
+    request(app)
+      .get('/forward/and/render?name=tofishes')
+      .expect(200, /tofishes/, done);
+  });
+
   // filters
   it('should forward to baidu after requestProxy', done => {
     request(app)

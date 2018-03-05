@@ -52,7 +52,7 @@ module.exports = {
       'api': 'http://localhost:8080/api/comment/list',
       'name': 'comments',
       handle(data, req, res) {
-        res.forward(`${req.path}/handler`);
+        res.forward(`${req.path}/handler?name=tofishes`);
       }
     }
   },
