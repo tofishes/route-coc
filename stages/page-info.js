@@ -49,6 +49,5 @@ module.exports = function pageInfo(req, res, next) {
     next(new Error(`Request loop execution more than ${maxTimes} times, whether into an infinite loop?`));
   }
 
-  console.log(pathname, '*******************8')
   next();
 };

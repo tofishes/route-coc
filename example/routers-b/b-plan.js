@@ -9,6 +9,10 @@ module.exports = {
   '/comments': {
     'get': {
       api: 'http://localhost:8080/api/comment/list',
+      handle(data) {
+        console.log(data, '++++')
+        return data;
+      },
       view: 'b-plan/comments'
     }
   }

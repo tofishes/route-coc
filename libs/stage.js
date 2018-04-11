@@ -154,11 +154,15 @@ Stage.prototype.handle = function handle(req, res, originNext) {
       return;
     }
 
+    // 置空req.router，防止在forward过程中，req.router指向上一个匹配到的router
+    req.router = null;
+
     const info = urlInfo(pathname);
 
     Object.assign(req.query, qs.parse(info.query));
+    // host表示是非本站内跳转
+    req.pathname = info.host ? pathname : info.pathname;
 
-    req.pathname = info.pathname;
     req.stageIndex = 0;
     // 让转发前的流程先执行并在下一个next时终止
     // 然后继续转发后的流程
