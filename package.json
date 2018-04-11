@@ -36,8 +36,8 @@
     "request": "^2.72.0",
     "t-log": "^1.1.0",
     "ua-parser-js": "^0.7.13",
-    "value-chain": "^1.0.5"
-    "qs": "^6.5.1",
+    "value-chain": "^1.0.5",
+    "qs": "^6.5.1"
   },
   "devDependencies": {
     "eslint": "^4.5.0",

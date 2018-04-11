@@ -66,4 +66,8 @@ describe('Extra app functions', () => {
       })
       .end(done);
   });
+
+  it('should no data pollute when config multi-name router', done => {
+
+  });
 });
