@@ -106,5 +106,13 @@ module.exports = {
         res.goto('/hello');
       }
     }
+  },
+  '/map': {
+    'get': {
+      api(req, res) {
+        const location = '%E5%8C%97%E4%BA%AC%E5%B8%82-%E6%B5%B7%E6%B7%80%E5%8C%BA';
+        res.forward(`https://dev.lianj.com/map?location=${location}`);
+      }
+    }
   }
 };
